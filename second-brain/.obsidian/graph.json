@@ -1,0 +1,47 @@
+{
+  "collapse-filter": false,
+  "search": "",
+  "showTags": true,
+  "showAttachments": false,
+  "hideUnresolved": false,
+  "showOrphans": true,
+  "collapse-color-groups": false,
+  "colorGroups": [
+    {
+      "query": "path:moc OR tag:#moc",
+      "color": { "a": 1, "rgb": 14701138 }
+    },
+    {
+      "query": "path:fundamentos",
+      "color": { "a": 1, "rgb": 5431378 }
+    },
+    {
+      "query": "path:tecnologia",
+      "color": { "a": 1, "rgb": 3379663 }
+    },
+    {
+      "query": "path:pessoas",
+      "color": { "a": 1, "rgb": 14524814 }
+    },
+    {
+      "query": "path:sustentabilidade",
+      "color": { "a": 1, "rgb": 4503592 }
+    },
+    {
+      "query": "path:projeto",
+      "color": { "a": 1, "rgb": 12542593 }
+    }
+  ],
+  "collapse-display": true,
+  "showArrow": true,
+  "textFadeMultiplier": 0.3,
+  "nodeSizeMultiplier": 1.2,
+  "lineSizeMultiplier": 1,
+  "collapse-forces": true,
+  "centerStrength": 0.518,
+  "repelStrength": 11,
+  "linkStrength": 1,
+  "linkDistance": 220,
+  "scale": 1,
+  "close": false
+}
