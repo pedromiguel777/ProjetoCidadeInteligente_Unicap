@@ -1,0 +1,92 @@
+{
+  "version": 1,
+  "tool": "codex",
+  "standards": true,
+  "commentStyleLevel": "none",
+  "contextCode": "K7Q",
+  "skills": {
+    "skill-scope": {
+      "dir": "meta",
+      "companions": [
+        "auto.js",
+        "device.js",
+        "explain.js",
+        "kit.js",
+        "move.js",
+        "triggers.json"
+      ]
+    },
+    "handover": {
+      "dir": "workflow",
+      "companions": [
+        "draft.js",
+        "extras.md",
+        "size.js"
+      ]
+    },
+    "coding-standards": {
+      "dir": "standards",
+      "companions": []
+    },
+    "comment-style": {
+      "dir": "standards",
+      "companions": []
+    },
+    "session-budget": {
+      "dir": "workflow",
+      "companions": [
+        "compact.js",
+        "report.js",
+        "usage.js"
+      ]
+    },
+    "agent-usage": {
+      "dir": "workflow",
+      "companions": []
+    },
+    "mode-kernel": {
+      "dir": "workflow",
+      "companions": []
+    },
+    "pre-merge-gate": {
+      "dir": "workflow",
+      "companions": [
+        "edit-check.js"
+      ]
+    },
+    "pre-commit": {
+      "dir": "workflow",
+      "companions": [
+        "check.js",
+        "install-hook.js"
+      ]
+    },
+    "debug-protocol": {
+      "dir": "workflow",
+      "companions": []
+    },
+    "intent-capture": {
+      "dir": "workflow",
+      "companions": []
+    },
+    "plan-first": {
+      "dir": "workflow",
+      "companions": [
+        "delegate.js",
+        "delegated.md",
+        "dupe.js",
+        "goldfish.js",
+        "reviewer.js"
+      ]
+    },
+    "interpretation-checkpoint": {
+      "dir": "workflow",
+      "companions": []
+    }
+  },
+  "archived": {},
+  "skillRoot": ".agents/skills",
+  "protocolFile": "AGENTS.md",
+  "lastSeen": "2026-11-16",
+  "updatedAt": "2026-11-17T01:51:27.696Z"
+}
