@@ -109,3 +109,18 @@ Sem clone à mão: `git clone --depth 1 https://github.com/AftabIbrahimKazi/ai-d
 O relatório separa `EDITED LOCALLY` (o update sobrescreve), `MISSING LOCALLY` (o update recria), `NOT IN THIS LIBRARY VERSION` e `ACCEPTED` (divergência deliberada, listada em `.agents/scripts/kit-drift.accept`). Exit 1 com drift, 0 sem drift, 2 uso errado; `--warn` sempre sai 0 (para hook) e `--json` dá o mesmo em JSON.
 
 **Por que existe:** o `install-kit` guarda sha1 só dos *commands*; para skills o manifest registra apenas `{dir, companions}`, então `update` copia `SKILL.md` verbatim e sobrescreve edição local sem avisar — o relatório reporta `changed: true`, indistinguível de "o upstream tem versão nova". O `install-kit.verify` não detecta esse drift (só layout e protocolo): um `SKILL.md` editado passa como `clean`. Regra prática: arquivo do kit é descartável; regra de projeto vive aqui no `AGENTS.md` ou na skill da conta, nunca como edição local em `.agents/skills/*/SKILL.md`.
+
+## Skills three.js (vendorizadas)
+
+As 36 skills de `https://threejsresources.com/ai/skills` vivem em `.agents/skills/` como cópia do `SKILL.md` de quatro repositórios. Só o `SKILL.md` foi copiado: as pastas `references/` e `agents/` de origem (741 arquivos) ficaram de fora.
+
+| Origem | Skills | Licença no repo de origem |
+|---|---|---|
+| `scottstts/Threejs-Awesome-Graphics-Agent-Skills` | 24 (`threejs-*`: materiais, geometria, campos, planetas, vegetação, água, atmosfera, imagem, sombras, câmera, arquitetura) | sim (`LICENSE`) |
+| `majidmanzarpour/threejs-game-skills` | 9 (`threejs-game-*`, `threejs-3d-generator`, `threejs-image-generator`, `threejs-audio-generator`, `threejs-aaa-graphics-builder`, `threejs-debug-profiler`, `threejs-qa-release`) | sim (`LICENSE`) |
+| `azakhary/nixie-fx` | 2 (`nixie-fx-authoring`, `nixie-fx-runtime`) | sim (`LICENSE`) |
+| `dgreenheck/webgpu-claude-skill` | 1 (`webgpu-threejs-tsl`) | não tem arquivo de licença |
+
+As mesmas 36 estão registradas na conta do Freebuff como 5 skills individuais + 8 pacotes temáticos; o repo guarda o texto integral de cada uma. O `install-kit verify` aceita estas pastas (layout plano, frontmatter com `name` = pasta) e o `install-kit update` não as toca, porque não estão no manifest.
+
+**Para atualizar:** `git clone --depth 1 --filter=blob:none --no-checkout <repo>`, `git checkout HEAD -- 'skills/*/SKILL.md'` e copie para `.agents/skills/<nome>/SKILL.md`.

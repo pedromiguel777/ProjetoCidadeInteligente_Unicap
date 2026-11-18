@@ -4,7 +4,7 @@ Updated: 2026-11-18 · Branch: `freebuff/5c1e5c3c1f3c632b95a00f32`
 
 ## Current state
 
-Repositório de notas (second-brain em Markdown) com o `ai-dev-kit` instalado por cima: `AGENTS.md` (contrato, token `[CX K7Q]`), `.agents/skills/` (13 skills + 17 companions `.js`), `.ai-dev-kit.json` (manifest do kit) e `coding-standards/` reduzido a 10 arquivos (git, qa, ai). O trabalho da sessão vive no branch `freebuff/5c1e5c3c1f3c632b95a00f32`, criado a partir de `main` (`ae7001f`). **Este arquivo não registra contagem de commits, hashes nem "árvore limpa"** — isso muda a cada commit e chega desatualizado por construção. Para o estado exato, rode `git log --oneline origin/main..HEAD` (o que ainda não está em `main`) e `git status` (o que ainda não foi commitado). Aqui fica só o que não envelhece: composição, decisões e riscos. Atualize `Updated:` apenas quando um desses três mudar — não quando o estado mudar.
+Repositório de notas (second-brain em Markdown) com o `ai-dev-kit` instalado por cima: `AGENTS.md` (contrato, token `[CX K7Q]`), `.agents/skills/` (13 skills do kit com 17 companions `.js`, mais 36 skills three.js vendorizadas como `SKILL.md`), `.ai-dev-kit.json` (manifest do kit) e `coding-standards/` reduzido a 10 arquivos (git, qa, ai). O trabalho da sessão vive no branch `freebuff/5c1e5c3c1f3c632b95a00f32`, criado a partir de `main` (`ae7001f`). **Este arquivo não registra contagem de commits, hashes nem "árvore limpa"** — isso muda a cada commit e chega desatualizado por construção. Para o estado exato, rode `git log --oneline origin/main..HEAD` (o que ainda não está em `main`) e `git status` (o que ainda não foi commitado). Aqui fica só o que não envelhece: composição, decisões e riscos. Atualize `Updated:` apenas quando um desses três mudar — não quando o estado mudar.
 
 ## Last session
 
@@ -25,6 +25,7 @@ Instalação do kit e sua redução ao que este repo usa: 13 skills promovidas p
 - `.ai-dev-kit.json` guarda `standards: true` — coerente com a pasta existir, mas não reflete o corte.
 - `coding-standards/ai-standards.md:43` cita `css-standards.md` e `frameworks/astro.md` num exemplo de string (não é link; deixado intacto por ser conteúdo upstream).
 - 22 WARN de `console.log` nos scripts do kit (`handover/*.js`, `skill-scope/*.js`): é saída de CLI, não debug esquecido.
+- As 36 skills three.js entraram só como `SKILL.md`: as pastas `references/` e `agents/` dos repositórios de origem (741 arquivos) não foram copiadas. Skill que dependa de referência lê o texto do `SKILL.md` e não acha o arquivo citado.
 - `git config user.name/email` não existem neste ambiente — commits exigem `-c user.name=… -c user.email=…` (use o e-mail do histórico: `79537972+pedromiguel777@users.noreply.github.com`).
 
 ## Next steps
