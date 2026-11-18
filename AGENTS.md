@@ -87,3 +87,24 @@ As 13 skills abaixo também existem como skills registradas na conta do Freebuff
 ## Project State
 
 Leia `handover.md` na raiz: estado atual, decisões com o porquê, riscos conhecidos e o ponto exato de retomada. O conhecimento de domínio continua em `second-brain/` (comece por `00 - Início.md` e pelos MOCs).
+
+---
+
+## Kit drift check
+
+**Antes de qualquer `install-kit update` (ou `install` com `--standards`), rode:**
+
+```
+node .agents/scripts/kit-drift.js --library <clone do ai-dev-kit>
+```
+
+`--library` é o caminho de um clone do `ai-dev-kit` — o mesmo que o `install-kit` usa (`--library` no CLI dele aponta para lá). Duas formas de não digitá-lo toda vez:
+
+- exporte `AI_DEV_KIT_LIBRARY=/caminho/do/clone` no ambiente e omita a flag;
+- ou passe `--library` explicitamente, que vence a variável.
+
+Sem clone à mão: `git clone --depth 1 https://github.com/AftabIbrahimKazi/ai-dev-kit /tmp/kit` (o script precisa só do `skills/` e do `coding-standards/`).
+
+O relatório separa `EDITED LOCALLY` (o update sobrescreve), `MISSING LOCALLY` (o update recria), `NOT IN THIS LIBRARY VERSION` e `ACCEPTED` (divergência deliberada, listada em `.agents/scripts/kit-drift.accept`). Exit 1 com drift, 0 sem drift, 2 uso errado; `--warn` sempre sai 0 (para hook) e `--json` dá o mesmo em JSON.
+
+**Por que existe:** o `install-kit` guarda sha1 só dos *commands*; para skills o manifest registra apenas `{dir, companions}`, então `update` copia `SKILL.md` verbatim e sobrescreve edição local sem avisar — o relatório reporta `changed: true`, indistinguível de "o upstream tem versão nova". O `install-kit.verify` não detecta esse drift (só layout e protocolo): um `SKILL.md` editado passa como `clean`. Regra prática: arquivo do kit é descartável; regra de projeto vive aqui no `AGENTS.md` ou na skill da conta, nunca como edição local em `.agents/skills/*/SKILL.md`.

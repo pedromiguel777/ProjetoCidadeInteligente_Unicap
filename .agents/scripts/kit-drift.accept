@@ -1,0 +1,33 @@
+# Divergências do kit aceitas de propósito. Glob por caminho relativo à raiz.
+# O kit-drift.js lista estas separadas, então nada fica escondido — só não
+# contam como drift para efeito de exit code.
+#
+# Camadas de standard removidas no corte de 105 -> 10 arquivos.
+# Motivo: nenhum arquivo deste repositório é CSS, HTML, JS/TS, UI, SEO,
+# performance, acessibilidade, versionamento ou framework.
+coding-standards/accessibility-standards.md
+coding-standards/css-standards.md
+coding-standards/css-standards/**
+coding-standards/design-standards.md
+coding-standards/frameworks/**
+coding-standards/html-standards.md
+coding-standards/html-standards/**
+coding-standards/js-standards.md
+coding-standards/js-standards/**
+coding-standards/js-and-ts-standards.md
+coding-standards/js-and-ts-standards/**
+coding-standards/performance-standards.md
+coding-standards/seo-standards.md
+coding-standards/tooling/**
+coding-standards/ts-standards.md
+coding-standards/ts-standards/**
+coding-standards/ui-standards.md
+coding-standards/ui-standards/**
+coding-standards/versioning-standards.md
+#
+# Nunca foram parte do install deste projeto; o kit os traz no pacote.
+coding-standards/CLAUDE.example.md
+coding-standards/README.md
+#
+# Reescrito como mapa real das três disciplinas ativas (git, qa, ai).
+coding-standards/index.md
