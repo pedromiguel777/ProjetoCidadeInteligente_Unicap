@@ -1,0 +1,67 @@
+{
+  "source": "https://threejsresources.com/ai/skills",
+  "why": "A conta do Freebuff aceita no maximo 5 alteracoes de skill por rodada. As 36 skills de origem viraram 8 pacotes tematicos (31) mais 5 individuais para caber nesse limite. O repo guarda o SKILL.md integral de cada uma; a conta guarda unidades de disparo com descricao densa. Este arquivo e a correspondencia entre os dois lados.",
+  "repo": ".agents/skills/<name>/SKILL.md",
+  "counts": {
+    "source_skills": 36,
+    "account_packs": 8,
+    "packed_skills": 31,
+    "individual_skills": 5
+  },
+  "packs": {
+    "threejs-procedural-pack": [
+      "threejs-procedural-materials",
+      "threejs-procedural-geometry",
+      "threejs-procedural-fields",
+      "threejs-procedural-planets",
+      "threejs-procedural-vegetation"
+    ],
+    "threejs-scene-direction-pack": [
+      "threejs-skill-router",
+      "threejs-camera-direction",
+      "threejs-procedural-animation",
+      "threejs-procedural-architecture"
+    ],
+    "threejs-atmosphere-weather-pack": [
+      "threejs-atmosphere-aerial-perspective",
+      "threejs-volumetric-clouds",
+      "threejs-precipitation-surfaces",
+      "threejs-temporal-surfaces"
+    ],
+    "threejs-water-ocean-pack": [
+      "threejs-spectral-ocean",
+      "threejs-water-optics",
+      "threejs-parallax-occlusion-mapping"
+    ],
+    "threejs-image-post-pack": [
+      "threejs-image-pipeline",
+      "threejs-bloom",
+      "threejs-raymarched-space-effects"
+    ],
+    "threejs-particles-fx-pack": [
+      "nixie-fx-authoring",
+      "nixie-fx-runtime",
+      "threejs-procedural-vfx"
+    ],
+    "threejs-game-core-pack": [
+      "threejs-game-director",
+      "threejs-gameplay-systems",
+      "threejs-game-ui-designer",
+      "threejs-debug-profiler",
+      "threejs-qa-release"
+    ],
+    "threejs-game-assets-pack": [
+      "threejs-3d-generator",
+      "threejs-image-generator",
+      "threejs-audio-generator",
+      "threejs-aaa-graphics-builder"
+    ]
+  },
+  "individual": [
+    "threejs-exposure-color-grading",
+    "threejs-screen-space-ambient-occlusion",
+    "threejs-shadow-systems",
+    "threejs-visual-validation",
+    "webgpu-threejs-tsl"
+  ]
+}

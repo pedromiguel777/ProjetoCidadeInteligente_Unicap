@@ -121,6 +121,6 @@ As 36 skills de `https://threejsresources.com/ai/skills` vivem em `.agents/skill
 | `azakhary/nixie-fx` | 2 (`nixie-fx-authoring`, `nixie-fx-runtime`) | sim (`LICENSE`) |
 | `dgreenheck/webgpu-claude-skill` | 1 (`webgpu-threejs-tsl`) | não tem arquivo de licença |
 
-As mesmas 36 estão registradas na conta do Freebuff como 5 skills individuais + 8 pacotes temáticos; o repo guarda o texto integral de cada uma. O `install-kit verify` aceita estas pastas (layout plano, frontmatter com `name` = pasta) e o `install-kit update` não as toca, porque não estão no manifest.
+As mesmas 36 estão registradas na conta do Freebuff como 5 skills individuais + 8 pacotes temáticos: `threejs-packs.json` guarda o mapa pacote → skills e o motivo das embalagens (o limite de 5 alterações de skill por rodada). O repo guarda o texto integral de cada uma; a conta, unidades de disparo. O `install-kit verify` aceita estas pastas (layout plano, frontmatter com `name` = pasta) e o `install-kit update` não as toca, porque não estão no manifest.
 
 **Para atualizar:** `git clone --depth 1 --filter=blob:none --no-checkout <repo>`, `git checkout HEAD -- 'skills/*/SKILL.md'` e copie para `.agents/skills/<nome>/SKILL.md`.
