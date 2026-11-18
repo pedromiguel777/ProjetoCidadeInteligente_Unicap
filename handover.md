@@ -4,7 +4,7 @@ Updated: 2026-11-18 · Branch: `freebuff/5c1e5c3c1f3c632b95a00f32`
 
 ## Current state
 
-Repositório de notas (second-brain em Markdown) com o `ai-dev-kit` instalado por cima: `AGENTS.md` (contrato, token `[CX K7Q]`), `.agents/skills/` (13 skills + 17 companions `.js`), `.ai-dev-kit.json` (manifest do kit) e `coding-standards/` reduzido a 10 arquivos (git, qa, ai). Quatro commits, **branch publicado**: `dab0c97` (kit e contrato) → `e1a3124` (corte dos standards) → `f536076` (handover) → `7b9d808` (estado corrigido), com o commit que atualiza estas linhas por cima. `freebuff/5c1e5c3c1f3c632b95a00f32` está no remoto; `main` em `ae7001f` é ancestral (fast-forward possível). PR **não aberto**: `gh` sem autenticação e nenhum token no ambiente — o envio parou aqui.
+Repositório de notas (second-brain em Markdown) com o `ai-dev-kit` instalado por cima: `AGENTS.md` (contrato, token `[CX K7Q]`), `.agents/skills/` (13 skills + 17 companions `.js`), `.ai-dev-kit.json` (manifest do kit) e `coding-standards/` reduzido a 10 arquivos (git, qa, ai). O trabalho da sessão vive no branch `freebuff/5c1e5c3c1f3c632b95a00f32`, criado a partir de `main` (`ae7001f`). **Este arquivo não registra contagem de commits, hashes nem "árvore limpa"** — isso muda a cada commit e chega desatualizado por construção. Para o estado exato, rode `git log --oneline origin/main..HEAD` (o que ainda não está em `main`) e `git status` (o que ainda não foi commitado). Aqui fica só o que não envelhece: composição, decisões e riscos. Atualize `Updated:` apenas quando um desses três mudar — não quando o estado mudar.
 
 ## Last session
 
@@ -29,7 +29,7 @@ Instalação do kit e sua redução ao que este repo usa: 13 skills promovidas p
 
 ## Next steps
 
-1. **Ponto de retomada:** abrir o PR de `freebuff/5c1e5c3c1f3c632b95a00f32` para `main` — o branch já está no remoto e o corpo do PR está escrito (kit, corte 105→10, handover). Use `gh pr create --base main --head freebuff/5c1e5c3c1f3c632b95a00f32` onde o `gh` estiver autenticado, ou a página de compare de `main...freebuff/5c1e5c3c1f3c632b95a00f32`. Depois do merge, apagar o branch.
+1. **Ponto de retomada:** rode `git status` e `git log --oneline origin/main..HEAD`. Commits não publicados → `git push` neste branch. Branch sem PR → abrir um para `main` (`gh pr create --base main --head freebuff/5c1e5c3c1f3c632b95a00f32`, ou a página de compare), com corpo citando kit, corte 105→10 e handover. PR já mergeado → nada pendente aqui. Em nenhum dos casos é preciso editar este arquivo para saber em que pé está.
 2. Se o envio sair: decidir se o PR inclui `.agents/skills/` (368 KB) ou apenas `AGENTS.md` + `coding-standards/`.
 3. Se o kit for atualizado: re-promover só as skills cujo `SKILL.md` mudou (`git diff` na pasta mostra quais).
 4. Opcional: criar um `CLAUDE.md` de 3 linhas apontando para `AGENTS.md`, caso o repo seja aberto no Claude Code.
