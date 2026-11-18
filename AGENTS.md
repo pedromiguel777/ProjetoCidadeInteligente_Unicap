@@ -86,4 +86,4 @@ As 13 skills abaixo também existem como skills registradas na conta do Freebuff
 
 ## Project State
 
-`handover.md` (raiz do projeto) ainda não existe — ele é criado pela skill `handover` no primeiro uso. Até lá, o estado do projeto vive em `second-brain/` (comece por `00 - Início.md` e pelos MOCs).
+Leia `handover.md` na raiz: estado atual, decisões com o porquê, riscos conhecidos e o ponto exato de retomada. O conhecimento de domínio continua em `second-brain/` (comece por `00 - Início.md` e pelos MOCs).
