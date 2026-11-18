@@ -25,7 +25,7 @@ If the token is ever missing from a response — or the Context code is missing 
 | QA standard | `coding-standards/qa/index.md` |
 | AI standard | `coding-standards/ai-standards.md` |
 
-Sem script/CSS standard: o repositório é uma base de conhecimento em Markdown (o único código é `second-brain/scripts/auditar_grafo.py`). As pastas `coding-standards/js*`, `ts*`, `css*`, `html*`, `seo*`, `design*`, `ui*` e `frameworks/` foram copiadas pelo instalador mas não estão ativas — apague-as se não quiser carregá-las.
+Sem script/CSS standard: o repositório é uma base de conhecimento em Markdown e o único código é `second-brain/scripts/auditar_grafo.py`. As camadas `js*`, `ts*`, `js-and-ts*`, `css*`, `html*`, `ui*`, `design*`, `seo*`, `performance*`, `accessibility*`, `versioning*`, `frameworks/` e `tooling/` foram copiadas pelo instalador e depois **removidas** (`coding-standards/` caiu de 105 para 10 arquivos; sobram git, qa e ai). Disciplina ausente vira `STANDARDS GAP:` — nunca importar regra de outro projeto. Se alguém rodar `install-kit install/update --standards`, a árvore completa volta: refaça o corte ou aceite o peso.
 
 ---
 
