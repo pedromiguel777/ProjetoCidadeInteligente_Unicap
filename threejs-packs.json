@@ -57,6 +57,21 @@
       "threejs-aaa-graphics-builder"
     ]
   },
+  "account": [
+    "threejs-atmosphere-weather-pack",
+    "threejs-exposure-color-grading",
+    "threejs-game-assets-pack",
+    "threejs-game-core-pack",
+    "threejs-image-post-pack",
+    "threejs-particles-fx-pack",
+    "threejs-procedural-pack",
+    "threejs-scene-direction-pack",
+    "threejs-screen-space-ambient-occlusion",
+    "threejs-shadow-systems",
+    "threejs-visual-validation",
+    "threejs-water-ocean-pack",
+    "webgpu-threejs-tsl"
+  ],
   "individual": [
     "threejs-exposure-color-grading",
     "threejs-screen-space-ambient-occlusion",
