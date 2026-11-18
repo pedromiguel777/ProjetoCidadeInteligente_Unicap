@@ -54,6 +54,7 @@ Sem script/CSS standard: o repositório é uma base de conhecimento em Markdown 
 - Keep the shell at the project root: no `cd` into a subfolder; use absolute paths, a subshell or the tool's own root option (RULE AI-20)
 - When a task will take more than 5 minutes, say so before starting, as a range ("~8-12 min"), in one line at the top of the response; skip it for shorter tasks. The `eta` command and `eta-nudge` mod follow up (`plan-first` has the checkpoint rule)
 - No invented rules — gaps in standards are flagged to the developer
+- **Ao escrever `handover.md`:** `## Current state` registra composição, não posição — nunca contagem de commits, hash do topo, "nada empurrado" nem "árvore limpa"; eles ficam falsos no instante do commit que os escreve e forçam outro commit de correção a cada mudança de estado. Para o estado, aponte os comandos que respondem na hora: `git log --oneline origin/main..HEAD` e `git status`. `## Next steps` é escrito como condição ("commits não publicados → push"), nunca como retrato ("o branch já está no remoto"); `Updated:` data o conteúdo (composição, decisões, riscos), não o estado.
 - **Decision preference (every mode):** weigh token efficiency and correct results first, with minimal Agent-tool use (see `agent-usage`, `mode-kernel`).
 - Full rules in `coding-standards/ai-standards.md`
 

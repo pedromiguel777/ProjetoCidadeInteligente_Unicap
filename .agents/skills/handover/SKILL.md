@@ -32,7 +32,7 @@ Update `handover.md` in place — never append an ever-growing log. First fold i
 Updated: <date> · Branch: <branch>
 
 ## Current state
-2–4 sentences: what works, what's mid-flight. Composition, not position — never commit counts, hashes or "clean tree" (see the no-positional-facts rule below).
+2–4 sentences: what works, what's mid-flight.
 
 ## Next task
 Only when `/next` queued one: `<tsk-note|tsk-start>: <task>`. Written by `/next`; kept as-is until the task is done, then deleted.
@@ -86,7 +86,6 @@ Open `extras.md` in this skill's folder only for: archiving skills at session en
 ## Rules
 - **Outcome language, not process language.** "Venus overlay counters animate on scroll-enter" — not "edited VenusIntroCounters.ts".
 - **Never duplicate what git already records** — link commits instead of describing them.
-- **No positional facts in `## Current state`**: no commit counts ("three commits"), no hashes as the tip, no "pushed/unpushed", no "clean tree". They are false the instant the commit that writes them lands, so every state change forces another correcting commit — an endless loop of fix-and-recommit. Name the branch and its base commit instead, then point at the commands that answer state live: `git log --oneline origin/main..HEAD` (what is not on the base yet) and `git status` (what is not committed). Write `## Next steps` as conditions ("unpublished commits → push") rather than as a snapshot ("the branch is already pushed"). `Updated:` dates the content — composition, decisions, risks — not the state.
 - **One `## Last session` block, overwritten each time.** Never stack dated session sections; that is the single failure mode that turns this file into a log. If you find several, collapse them — the older ones are git history and memory-bank facts.
 - **Absolute dates**, never "yesterday"/"last week".
 - If the project already has a handover file in a different format, adopt and improve its format rather than replacing it wholesale.

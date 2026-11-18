@@ -31,3 +31,11 @@ coding-standards/README.md
 #
 # Reescrito como mapa real das três disciplinas ativas (git, qa, ai).
 coding-standards/index.md
+#
+# Editado em dd19bbd para carregar a regra de estado posicional e revertido ao
+# original do kit: a regra agora vive no AGENTS.md ("Ao escrever handover.md").
+# O arquivo voltou a ser do kit e o update pode sobrescrevê-lo à vontade —
+# nenhuma regra de projeto mora em .agents/skills/. Limite deste aceite: se
+# alguém editar a skill de novo, a divergência aparece em ACCEPTED em vez de
+# EDITED; reabra esta decisão em vez de confiar no silêncio.
+.agents/skills/handover/SKILL.md
