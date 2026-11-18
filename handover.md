@@ -4,7 +4,7 @@ Updated: 2026-11-18 · Branch: `freebuff/5c1e5c3c1f3c632b95a00f32`
 
 ## Current state
 
-Repositório de notas (second-brain em Markdown) com o `ai-dev-kit` instalado por cima: `AGENTS.md` (contrato, token `[CX K7Q]`), `.agents/skills/` (13 skills + 17 companions `.js`), `.ai-dev-kit.json` (manifest do kit) e `coding-standards/` reduzido a 10 arquivos (git, qa, ai). Três commits locais, **nada empurrado**: `dab0c97` (kit e contrato) → `e1a3124` (corte dos standards) → `f536076` (este handover), com o commit que atualiza estas linhas por cima. Árvore limpa.
+Repositório de notas (second-brain em Markdown) com o `ai-dev-kit` instalado por cima: `AGENTS.md` (contrato, token `[CX K7Q]`), `.agents/skills/` (13 skills + 17 companions `.js`), `.ai-dev-kit.json` (manifest do kit) e `coding-standards/` reduzido a 10 arquivos (git, qa, ai). Quatro commits, **branch publicado**: `dab0c97` (kit e contrato) → `e1a3124` (corte dos standards) → `f536076` (handover) → `7b9d808` (estado corrigido), com o commit que atualiza estas linhas por cima. `freebuff/5c1e5c3c1f3c632b95a00f32` está no remoto; `main` em `ae7001f` é ancestral (fast-forward possível). PR **não aberto**: `gh` sem autenticação e nenhum token no ambiente — o envio parou aqui.
 
 ## Last session
 
@@ -29,7 +29,7 @@ Instalação do kit e sua redução ao que este repo usa: 13 skills promovidas p
 
 ## Next steps
 
-1. **Ponto de retomada:** confirmar `git log --oneline -3` = `f536076` + `e1a3124` + `dab0c97` em `freebuff/5c1e5c3c1f3c632b95a00f32`, então decidir o envio — `git push` do branch atual, ou abrir PR para `main` a partir do topo. Nada foi empurrado até aqui.
+1. **Ponto de retomada:** abrir o PR de `freebuff/5c1e5c3c1f3c632b95a00f32` para `main` — o branch já está no remoto e o corpo do PR está escrito (kit, corte 105→10, handover). Use `gh pr create --base main --head freebuff/5c1e5c3c1f3c632b95a00f32` onde o `gh` estiver autenticado, ou a página de compare de `main...freebuff/5c1e5c3c1f3c632b95a00f32`. Depois do merge, apagar o branch.
 2. Se o envio sair: decidir se o PR inclui `.agents/skills/` (368 KB) ou apenas `AGENTS.md` + `coding-standards/`.
 3. Se o kit for atualizado: re-promover só as skills cujo `SKILL.md` mudou (`git diff` na pasta mostra quais).
 4. Opcional: criar um `CLAUDE.md` de 3 linhas apontando para `AGENTS.md`, caso o repo seja aberto no Claude Code.
