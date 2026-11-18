@@ -4,7 +4,7 @@ Updated: 2026-11-18 · Branch: `freebuff/5c1e5c3c1f3c632b95a00f32`
 
 ## Current state
 
-Repositório de notas (second-brain em Markdown) com o `ai-dev-kit` instalado por cima: `AGENTS.md` (contrato, token `[CX K7Q]`), `.agents/skills/` (13 skills + 17 companions `.js`), `.ai-dev-kit.json` (manifest do kit) e `coding-standards/` reduzido a 10 arquivos (git, qa, ai). Dois commits locais, **nada empurrado**: `e1a3124` no topo, `dab0c97` embaixo. Fora deles, dois itens não commitados: `handover.md` (novo, untracked) e `AGENTS.md` (modificado, seção Project State).
+Repositório de notas (second-brain em Markdown) com o `ai-dev-kit` instalado por cima: `AGENTS.md` (contrato, token `[CX K7Q]`), `.agents/skills/` (13 skills + 17 companions `.js`), `.ai-dev-kit.json` (manifest do kit) e `coding-standards/` reduzido a 10 arquivos (git, qa, ai). Três commits locais, **nada empurrado**: `dab0c97` (kit e contrato) → `e1a3124` (corte dos standards) → `f536076` (este handover), com o commit que atualiza estas linhas por cima. Árvore limpa.
 
 ## Last session
 
@@ -29,7 +29,7 @@ Instalação do kit e sua redução ao que este repo usa: 13 skills promovidas p
 
 ## Next steps
 
-1. **Ponto de retomada:** confirmar `git log --oneline -2` = `e1a3124` + `dab0c97` em `freebuff/5c1e5c3c1f3c632b95a00f32`, então decidir o envio — `git push` do branch atual, ou abrir PR para `main` a partir de `e1a3124`. Nada foi empurrado até aqui.
+1. **Ponto de retomada:** confirmar `git log --oneline -3` = `f536076` + `e1a3124` + `dab0c97` em `freebuff/5c1e5c3c1f3c632b95a00f32`, então decidir o envio — `git push` do branch atual, ou abrir PR para `main` a partir do topo. Nada foi empurrado até aqui.
 2. Se o envio sair: decidir se o PR inclui `.agents/skills/` (368 KB) ou apenas `AGENTS.md` + `coding-standards/`.
 3. Se o kit for atualizado: re-promover só as skills cujo `SKILL.md` mudou (`git diff` na pasta mostra quais).
 4. Opcional: criar um `CLAUDE.md` de 3 linhas apontando para `AGENTS.md`, caso o repo seja aberto no Claude Code.
