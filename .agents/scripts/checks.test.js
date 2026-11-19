@@ -15,6 +15,7 @@ const { spawnSync } = require("child_process");
 
 const PACKS = path.join(__dirname, "packs-check.js");
 const KIT = path.join(__dirname, "kit-drift.js");
+const ALL = path.join(__dirname, "check-all.js");
 const fm = (name) => `---\nname: ${name}\ndescription: fixture\n---\n\n# ${name}\n`;
 
 function tmp() {
@@ -162,6 +163,14 @@ test("packs-check exits 2 when threejs-packs.json is missing", (t) => {
   const r = run(PACKS, ["--root", dir], dir);
   assert.equal(r.status, 2, r.out);
   assert.match(r.out, /no threejs-packs\.json/);
+});
+
+test("check-all exits 2 when --root has no .agents/scripts", (t) => {
+  const dir = tmp();
+  t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
+  const r = run(ALL, ["--root", dir], dir);
+  assert.equal(r.status, 2, r.out);
+  assert.match(r.out, /not found \(wrong --root\?\)/);
 });
 
 test("kit-drift keeps exit 0 under --warn, with the drift still reported", (t) => {
