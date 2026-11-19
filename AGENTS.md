@@ -91,6 +91,16 @@ Leia `handover.md` na raiz: estado atual, decisões com o porquê, riscos conhec
 
 ---
 
+## Checagens do repo
+
+**O comando é um só, antes de commitar e antes de qualquer `install-kit update`:**
+
+```
+node .agents/scripts/check-all.js [--library <clone do ai-dev-kit>]
+```
+
+Roda em sequência `checks.test.js` (os testes das próprias checagens), `packs-check.js` (o mapa three.js) e `kit-drift.js` (kit instalado × biblioteca), e sai 1 se qualquer um falhar. Sem clone da biblioteca, `kit-drift` é reportado como `SKIP` — visível, nunca silencioso — e não derruba a execução; `--library` vence `AI_DEV_KIT_LIBRARY`, que vence o fallback `/tmp/kit`. Não há hook de git: os hooks moram no diretório comum do git, compartilhado entre worktrees, então automação por hook fica fora deste repo — a rotina é o comando único.
+
 ## Kit drift check
 
 **Antes de qualquer `install-kit update` (ou `install` com `--standards`), rode:**
@@ -123,7 +133,7 @@ As 36 skills de `https://threejsresources.com/ai/skills` vivem em `.agents/skill
 
 As mesmas 36 estão registradas na conta do Freebuff como 5 skills individuais + 8 pacotes temáticos: `threejs-packs.json` guarda o mapa pacote → skills e o motivo das embalagens (o limite de 5 alterações de skill por rodada). O repo guarda o texto integral de cada uma; a conta, unidades de disparo.
 
-**Testar as checagens:** `node --test .agents/scripts/checks.test.js` — roda `packs-check.js` e `kit-drift.js` contra fixtures temporárias e exige exit 1 com drift e 0 sem drift, para que um refactor não os transforme em sempre-passa.
+**Testar as checagens:** `node --test .agents/scripts/checks.test.js` — roda `packs-check.js` e `kit-drift.js` contra fixtures temporárias e exige exit 1 com drift e 0 sem drift, para que um refactor não os transforme em sempre-passa. Rode pelo `check-all.js`, que junta com o resto.
 
 **Conferir o mapa:** `node .agents/scripts/packs-check.js` — exit 1 se o JSON envelheceu (skill no disco fora do mapa, skill do mapa sem pasta, `name:` do frontmatter diferente da pasta, contagem declarada errada, ou bloco `account` destoando dos pacotes). `--json` para automação. O bloco `account` é um registro, não uma consulta ao vivo: atualize-o quando a conta mudar. O `install-kit verify` aceita estas pastas (layout plano, frontmatter com `name` = pasta) e o `install-kit update` não as toca, porque não estão no manifest.
 
