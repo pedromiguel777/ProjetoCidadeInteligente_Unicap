@@ -26,9 +26,17 @@ function write(file, content) {
   fs.writeFileSync(file, content);
 }
 
-function run(script, args, cwd) {
-  const r = spawnSync(process.execPath, [script, ...args], { cwd, encoding: "utf8" });
+function run(script, args, cwd, env) {
+  const r = spawnSync(process.execPath, [script, ...args], { cwd, encoding: "utf8", env: env || process.env });
   return { status: r.status, out: r.stdout + r.stderr };
+}
+
+// The usage errors are exit 2, not 1: a missing manifest, a missing library or
+// a missing map is a broken invocation, never drift.
+function noKitEnv() {
+  const env = { ...process.env };
+  delete env.AI_DEV_KIT_LIBRARY;
+  return env;
 }
 
 // packs-check fixture: one pack with one member, one individual skill.
@@ -127,6 +135,33 @@ test("kit-drift exits 1 when a skill is missing locally", (t) => {
   const r = run(KIT, ["--root", root, "--library", library, "--json"], root);
   assert.equal(r.status, 1, r.out);
   assert.match(r.out, /"drift": 1/);
+});
+
+test("kit-drift exits 2 when the project has no manifest", (t) => {
+  const dir = tmp();
+  t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
+  const library = path.join(dir, "library");
+  write(path.join(library, "skills/dur/alpha.md"), fm("alpha"));
+  const r = run(KIT, ["--root", dir, "--library", library], dir);
+  assert.equal(r.status, 2, r.out);
+  assert.match(r.out, /no \.ai-dev-kit\.json/);
+});
+
+test("kit-drift exits 2 when no library is given", (t) => {
+  const dir = tmp();
+  t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
+  const { root } = kitRoot(dir);
+  const r = run(KIT, ["--root", root], root, noKitEnv());
+  assert.equal(r.status, 2, r.out);
+  assert.match(r.out, /pass --library/);
+});
+
+test("packs-check exits 2 when threejs-packs.json is missing", (t) => {
+  const dir = tmp();
+  t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
+  const r = run(PACKS, ["--root", dir], dir);
+  assert.equal(r.status, 2, r.out);
+  assert.match(r.out, /no threejs-packs\.json/);
 });
 
 test("kit-drift keeps exit 0 under --warn, with the drift still reported", (t) => {
