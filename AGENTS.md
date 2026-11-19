@@ -123,6 +123,8 @@ As 36 skills de `https://threejsresources.com/ai/skills` vivem em `.agents/skill
 
 As mesmas 36 estão registradas na conta do Freebuff como 5 skills individuais + 8 pacotes temáticos: `threejs-packs.json` guarda o mapa pacote → skills e o motivo das embalagens (o limite de 5 alterações de skill por rodada). O repo guarda o texto integral de cada uma; a conta, unidades de disparo.
 
+**Testar as checagens:** `node --test .agents/scripts/checks.test.js` — roda `packs-check.js` e `kit-drift.js` contra fixtures temporárias e exige exit 1 com drift e 0 sem drift, para que um refactor não os transforme em sempre-passa.
+
 **Conferir o mapa:** `node .agents/scripts/packs-check.js` — exit 1 se o JSON envelheceu (skill no disco fora do mapa, skill do mapa sem pasta, `name:` do frontmatter diferente da pasta, contagem declarada errada, ou bloco `account` destoando dos pacotes). `--json` para automação. O bloco `account` é um registro, não uma consulta ao vivo: atualize-o quando a conta mudar. O `install-kit verify` aceita estas pastas (layout plano, frontmatter com `name` = pasta) e o `install-kit update` não as toca, porque não estão no manifest.
 
 **Para atualizar:** `git clone --depth 1 --filter=blob:none --no-checkout <repo>`, `git checkout HEAD -- 'skills/*/SKILL.md'` e copie para `.agents/skills/<nome>/SKILL.md`.
