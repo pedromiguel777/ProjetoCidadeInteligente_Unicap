@@ -1,0 +1,4 @@
+# Corpo do PR (artefato local, gerado por sessão). Ver AGENTS.md / handover.md:
+# commitá-lo colocaria o corpo do PR dentro do próprio diff e mudaria as
+# contagens que ele cita. Regenere com `git diff --shortstat origin/main..HEAD`.
+pr-body.md
