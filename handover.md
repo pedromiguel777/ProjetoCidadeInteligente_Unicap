@@ -46,5 +46,6 @@ Quatro frentes fechadas: kit instalado e reduzido ao que este repo usa (13 skill
 - Não apagar os `SKILL.md` do repo (kit ou three.js), nem `.agents/skills/package.json` (shield CommonJS dos companions).
 - Não "consertar" os 22 WARN de `console.log` — são stdout das CLIs do kit.
 - Não instalar hooks de git: o diretório de hooks é comum a todos os worktrees desta máquina.
+- **`pr-body.md` é artefato local, nunca versionado** — é o corpo do PR para `gh pr create --body-file pr-body.md`. Se aparecer como `??` no `git status`, é esperado: não commitar (entraria no diff do próprio PR e mudaria as contagens que ele cita) e não apagar achando que é lixo. Se não existir, regenere a partir de `git diff --shortstat origin/main..HEAD` e da lista de commits.
 - `AGENTS.md` só é lido porque está na raiz; `.agents/skills/` não é auto-descoberto, o contrato é que manda carregar.
 - O corte dos standards é reversível mas não estável: qualquer reinstalação do kit desfaz. Refaça com o mesmo `rm` se acontecer.
