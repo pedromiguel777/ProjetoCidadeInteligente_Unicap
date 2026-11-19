@@ -122,19 +122,21 @@ O relatório separa `EDITED LOCALLY` (o update sobrescreve), `MISSING LOCALLY` (
 
 ## Skills three.js (vendorizadas)
 
-As 36 skills de `https://threejsresources.com/ai/skills` vivem em `.agents/skills/` como cópia do `SKILL.md` de quatro repositórios. Só o `SKILL.md` foi copiado: as pastas `references/` e `agents/` de origem (741 arquivos) ficaram de fora.
+As 36 skills de `https://threejsresources.com/ai/skills` vivem em `.agents/skills/` como cópia de quatro repositórios: os 36 `SKILL.md` mais o material que eles citam — `references/` (73 arquivos), `scripts/` (7), `examples/` (337, só código) e, no `webgpu-threejs-tsl`, `docs/` (7), `templates/` (2) e `REFERENCE.md`. São 497 arquivos, 6,2 MB.
 
-| Origem | Skills | Licença no repo de origem |
-|---|---|---|
-| `scottstts/Threejs-Awesome-Graphics-Agent-Skills` | 24 (`threejs-*`: materiais, geometria, campos, planetas, vegetação, água, atmosfera, imagem, sombras, câmera, arquitetura) | sim (`LICENSE`) |
-| `majidmanzarpour/threejs-game-skills` | 9 (`threejs-game-*`, `threejs-3d-generator`, `threejs-image-generator`, `threejs-audio-generator`, `threejs-aaa-graphics-builder`, `threejs-debug-profiler`, `threejs-qa-release`) | sim (`LICENSE`) |
-| `azakhary/nixie-fx` | 2 (`nixie-fx-authoring`, `nixie-fx-runtime`) | sim (`LICENSE`) |
-| `dgreenheck/webgpu-claude-skill` | 1 (`webgpu-threejs-tsl`) | não tem arquivo de licença |
+| Origem | Skills | Arquivos além do `SKILL.md` | Licença no repo de origem |
+|---|---|---|---|
+| `scottstts/Threejs-Awesome-Graphics-Agent-Skills` | 24 (`threejs-*`: materiais, geometria, campos, planetas, vegetação, água, atmosfera, imagem, sombras, câmera, arquitetura) | 380 | MIT (`LICENSE`) |
+| `majidmanzarpour/threejs-game-skills` | 9 (`threejs-game-*`, `threejs-3d-generator`, `threejs-image-generator`, `threejs-audio-generator`, `threejs-aaa-graphics-builder`, `threejs-debug-profiler`, `threejs-qa-release`) | 26 | MIT (`LICENSE`) |
+| `azakhary/nixie-fx` | 2 (`nixie-fx-authoring`, `nixie-fx-runtime`) | 6 | MIT (`LICENSE`) |
+| `dgreenheck/webgpu-claude-skill` | 1 (`webgpu-threejs-tsl`) | 15 | **não tem arquivo de licença** no repo de origem |
 
-As mesmas 36 estão registradas na conta do Freebuff como 5 skills individuais + 8 pacotes temáticos: `threejs-packs.json` guarda o mapa pacote → skills e o motivo das embalagens (o limite de 5 alterações de skill por rodada). O repo guarda o texto integral de cada uma; a conta, unidades de disparo.
+**O que ficou de fora, de propósito:** as pastas `agents/` (definições de sub-agente, não citadas por nenhum `SKILL.md`) e 165 binários dentro de `examples/` (`*.glb`, `*.exr`, texturas — 120 MB). Consequência: um exemplo cujo `SKILL.md` cita só o `.js` funciona como leitura; um que carrega `.glb`/textura da pasta `assets/` não roda sozinho. Para recuperar um binário pontual, clone o repo de origem e copie só o arquivo.
+
+As mesmas 36 estão registradas na conta do Freebuff como 5 skills individuais + 8 pacotes temáticos: `threejs-packs.json` guarda o mapa pacote → skills e o motivo das embalagens (o limite de 5 alterações de skill por rodada). O repo guarda o texto integral de cada uma e as pastas que ele cita; a conta, unidades de disparo — e o snapshot da conta continua sendo só `SKILL.md`, porque skill registrada não carrega diretório de apoio.
 
 **Testar as checagens:** `node --test .agents/scripts/checks.test.js` — roda `packs-check.js` e `kit-drift.js` contra fixtures temporárias e exige exit 1 com drift e 0 sem drift, para que um refactor não os transforme em sempre-passa. Rode pelo `check-all.js`, que junta com o resto.
 
 **Conferir o mapa:** `node .agents/scripts/packs-check.js` — exit 1 se o JSON envelheceu (skill no disco fora do mapa, skill do mapa sem pasta, `name:` do frontmatter diferente da pasta, contagem declarada errada, ou bloco `account` destoando dos pacotes). `--json` para automação. O bloco `account` é um registro, não uma consulta ao vivo: atualize-o quando a conta mudar. O `install-kit verify` aceita estas pastas (layout plano, frontmatter com `name` = pasta) e o `install-kit update` não as toca, porque não estão no manifest.
 
-**Para atualizar:** `git clone --depth 1 --filter=blob:none --no-checkout <repo>`, `git checkout HEAD -- 'skills/*/SKILL.md'` e copie para `.agents/skills/<nome>/SKILL.md`.
+**Para atualizar:** clone raso do repo de origem, `git checkout HEAD -- 'skills/*/SKILL.md' 'skills/*/references' 'skills/*/scripts' 'skills/*/examples'` e copie `SKILL.md`, `references/`, `scripts/` e os arquivos de código de `examples/` (`.js`/`.mjs`/`.ts`/`.md`/`.json`) para `.agents/skills/<nome>/`, preservando a estrutura interna. Não copie `examples/**/assets/`: são os 120 MB de binários.
