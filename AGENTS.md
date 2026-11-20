@@ -131,7 +131,31 @@ As 36 skills de `https://threejsresources.com/ai/skills` vivem em `.agents/skill
 | `azakhary/nixie-fx` | 2 (`nixie-fx-authoring`, `nixie-fx-runtime`) | 6 | MIT (`LICENSE`) |
 | `dgreenheck/webgpu-claude-skill` | 1 (`webgpu-threejs-tsl`) | 15 | **não tem arquivo de licença** no repo de origem |
 
-**O que ficou de fora, de propósito:** as pastas `agents/` (definições de sub-agente, não citadas por nenhum `SKILL.md`) e 165 binários dentro de `examples/` (`*.glb`, `*.exr`, texturas — 120 MB). Consequência: um exemplo cujo `SKILL.md` cita só o `.js` funciona como leitura; um que carrega `.glb`/textura da pasta `assets/` não roda sozinho. Para recuperar um binário pontual, clone o repo de origem e copie só o arquivo.
+**O que ficou de fora, de propósito:** as pastas `agents/` (definições de sub-agente, não citadas por nenhum `SKILL.md`) e 165 binários dentro de `examples/` (`*.glb`, `*.exr`, texturas — 120 MB). A subseção seguinte diz o que isso quebra, exemplo por exemplo.
+
+### Exemplos citados: o que roda e o que é leitura só
+
+Nenhum exemplo traz `index.html`: todos são módulos para importar num host Vite com `three` instalado. "Roda" aqui significa *importa e executa nesse host*, nunca "abrir o arquivo no navegador". Dos 54 exemplos que os `SKILL.md` citam (49 pastas + os 5 arquivos soltos do `webgpu-threejs-tsl`), **45 rodam e 9 são leitura só**:
+
+| Exemplo (sob `.agents/skills/`) | O que falta |
+|---|---|
+| `threejs-precipitation-surfaces/examples/wet-puddle-rain` | 4 mapas de asfalto `aerial_asphalt_01_{diff,nor_gl,rough,ao}_2k.jpg` e `Splash.png` |
+| `threejs-procedural-vegetation/examples/stylized-meadow-grass` | `grass-blades-up.glb`, `perlin.webp`, `path.webp` |
+| `threejs-spectral-ocean/examples/stylized-above-below-ocean` | `foam.webp`, `sand.webp` |
+| `threejs-water-optics/examples/interactive-pool-volume` | `tiles.jpg` e 5 faces de cubemap `{xpos,xneg,ypos,zpos,zneg}.jpg` |
+| `webgpu-threejs-tsl/examples/earth-shader.js` | `textures/earth_{day,night,clouds,bump}.jpg` |
+| `threejs-atmosphere-aerial-perspective/examples/lut-aerial-perspective` | 31 shaders importados com `?raw` (11 `.frag`, 5 `.vert`, 15 `.glsl`) |
+| `threejs-volumetric-clouds/examples/weather-volume-clouds` | 51 shaders `?raw` (20 `.frag`, 9 `.vert`, 22 `.glsl`); as nuvens ainda buscam `shape.bin`/`shape_detail.bin` em `media.githubusercontent.com` |
+| `threejs-procedural-materials/examples/simulated-tearable-denim` | 36 `*.wgsl` e `assets/simulated-tearable-denim/settled-drape.js` |
+| `threejs-water-optics/examples/photoreal-water` | `assets/photoreal-water/pebbles.js` (gera a textura de seixos em código) |
+
+As cinco primeiras linhas são asset binário: os caminhos são URLs absolutas `/skills/<skill>/assets/...`, então copiar o arquivo para `assets/` não basta — ele precisa ser servido nesse caminho, ou a URL do exemplo precisa ser editada. As quatro últimas são código de apoio: o repo não tem nenhum `.glsl`, `.frag`, `.vert` ou `.wgsl` (a cópia levou só `.js`/`.mjs`/`.ts`/`.md`/`.json`), e `assets/` no nível da skill nunca foi copiado.
+
+Duas ressalvas entram nos 45 que rodam: `threejs-procedural-materials/examples/hybrid-soil-moss-surface` exige `textureBaseUrl` apontando para os sets Poly Haven `Ground103`/`Moss002` (sem URL, a fábrica lança erro); `threejs-procedural-materials/examples/raytraced-diamond` e `threejs-procedural-vegetation/examples/procedural-surface-ivy` importam `postprocessing`/`three-stdlib`, então o host precisa desses pacotes além de `three`.
+
+Fora de `examples/`, três `SKILL.md` citam `assets/` que também não existe: `assets/geometry-quality-kit/` (6 `.js`, em `threejs-procedural-geometry`), `assets/threejs-vite-game/` (`threejs-gameplay-systems`) e `assets/starter-project/vfx-editor.prj.template.json` (`nixie-fx-authoring`).
+
+Para recuperar o que falta: clone raso do repo de origem da skill e copie só os arquivos que o exemplo pede, preservando o caminho relativo. Para os shaders, `git checkout HEAD -- 'skills/*/examples/**/*.{glsl,frag,vert,wgsl}'`; para um asset, copie o binário e sirva-o sob `/skills/<skill>/assets/...`.
 
 As mesmas 36 estão registradas na conta do Freebuff como 5 skills individuais + 8 pacotes temáticos: `threejs-packs.json` guarda o mapa pacote → skills e o motivo das embalagens (o limite de 5 alterações de skill por rodada). O repo guarda o texto integral de cada uma e as pastas que ele cita; a conta, unidades de disparo — e o snapshot da conta continua sendo só `SKILL.md`, porque skill registrada não carrega diretório de apoio.
 
