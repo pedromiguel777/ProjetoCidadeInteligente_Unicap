@@ -149,6 +149,32 @@ Nenhum exemplo traz `index.html`: todos são módulos para importar num host Vit
 | `threejs-procedural-materials/examples/simulated-tearable-denim` | 36 `*.wgsl` e `assets/simulated-tearable-denim/settled-drape.js` |
 | `threejs-water-optics/examples/photoreal-water` | `assets/photoreal-water/pebbles.js` (gera a textura de seixos em código) |
 
+**Execução verificada (1 dos 45):** `threejs-procedural-materials/examples/lava-flow-surface/lava-surface.js` foi importado e executado num host Vite mínimo — Vite 8.3.8, `three` 0.187.0 — e devolveu `Mesh` com `ShaderMaterial`, 4 vértices, 19 uniforms, `uTime` 1.5, `uResolution` 800×600 e fragment shader de 7 568 caracteres. **Não houve renderização**: a VM não tem GPU, então o teste para na criação de geometria/material e na atualização dos uniforms. Dois detalhes que o host precisa: alias `three` → `node_modules/three` (o exemplo mora fora da raiz do host) e `build.modulePreload.polyfill: false` (o polyfill padrão toca `document` e impede rodar o bundle em Node).
+
+```bash
+mkdir -p /tmp/lava-host && cd /tmp/lava-host
+printf '{"name":"lava-host","private":true,"type":"module"}' > package.json
+npm i --no-fund --no-audit three vite   # three 0.187, vite 8.3
+# vite.config.js: resolve.alias [{ find: /^three$/, replacement: '<host>/node_modules/three' }]
+#                 build.modulePreload.polyfill = false
+npx vite build --logLevel warn && node dist/assets/index-*.js
+```
+
+```js
+// main.js
+import * as THREE from "three";
+import { createLavaFlowSurface, updateLavaFlowMaterial } from "<repo>/.agents/skills/threejs-procedural-materials/examples/lava-flow-surface/lava-surface.js";
+const surface = createLavaFlowSurface({ flowSpeed: 0.2 });
+const camera = new THREE.PerspectiveCamera(50, 4 / 3, 0.1, 100);
+camera.position.set(0, 0.2, 1.5);
+camera.updateMatrixWorld(true);
+updateLavaFlowMaterial(surface.material, { elapsed: 1.5, width: 800, height: 600, camera });
+console.log(JSON.stringify({ type: surface.type, material: surface.material.type,
+  vertices: surface.geometry.attributes.position.count,
+  uniforms: Object.keys(surface.material.uniforms).length,
+  uTime: surface.material.uniforms.uTime.value }));
+```
+
 As cinco primeiras linhas são asset binário: os caminhos são URLs absolutas `/skills/<skill>/assets/...`, então copiar o arquivo para `assets/` não basta — ele precisa ser servido nesse caminho, ou a URL do exemplo precisa ser editada. As quatro últimas são código de apoio: o repo não tem nenhum `.glsl`, `.frag`, `.vert` ou `.wgsl` (a cópia levou só `.js`/`.mjs`/`.ts`/`.md`/`.json`), e `assets/` no nível da skill nunca foi copiado.
 
 Duas ressalvas entram nos 45 que rodam: `threejs-procedural-materials/examples/hybrid-soil-moss-surface` exige `textureBaseUrl` apontando para os sets Poly Haven `Ground103`/`Moss002` (sem URL, a fábrica lança erro); `threejs-procedural-materials/examples/raytraced-diamond` e `threejs-procedural-vegetation/examples/procedural-surface-ivy` importam `postprocessing`/`three-stdlib`, então o host precisa desses pacotes além de `three`.
