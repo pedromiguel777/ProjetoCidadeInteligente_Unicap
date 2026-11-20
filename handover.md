@@ -31,12 +31,12 @@ Quatro frentes fechadas: kit instalado e reduzido ao que este repo usa (13 skill
 - 9 dos 54 exemplos three.js citados pelos `SKILL.md` são leitura só — 5 por asset binário, 4 por shader/`.wgsl`/módulo de `assets/` que não foi copiado. A lista por exemplo, o que cada um pede e as duas ressalvas dos que rodam estão no `AGENTS.md`, seção "Exemplos citados".
 - O bloco `account` do `threejs-packs.json` é **registro**, não consulta ao vivo: `packs-check.js` detecta divergência entre mapa e registro, não entre mapa e plataforma. Re-promover na conta sem atualizar o JSON não é visto.
 - `kit-drift.js` precisa de clone da biblioteca; sem um, `check-all.js` reporta `SKIP` (visível) e não falha.
-- `main` recebeu o trabalho por push direto (fast-forward), não por PR: revisão e histórico de revisão não existiram. As contagens de `pr-body.md` acompanham `ae7001f..HEAD`, não um PR.
+- `main` recebeu o trabalho por push direto (fast-forward), não por PR: revisão e histórico de revisão não existiram; o branch e `main` são mantidos no mesmo commit a cada push. As contagens de `pr-body.md` acompanham `ae7001f..HEAD`, não um PR.
 - `git config user.name/email` não existem neste ambiente — commits exigem `-c user.name=… -c user.email=…` (use o e-mail do histórico: `79537972+pedromiguel777@users.noreply.github.com`).
 
 ## Next steps
 
-1. **Ponto de retomada:** rode `git status` e `git log --oneline origin/main..HEAD`. `main` já recebeu o trabalho por push direto em fast-forward (`ae7001f..0fbe1be`), então **não há PR a abrir**: o branch e `main` são o mesmo commit. Se quiser revisão a posteriori, reverta o intervalo em `main` num commit (`git revert --no-commit ae7001f..0fbe1be`) e abra o PR do branch, cujo diff volta a existir — sem force-push. Commit novo não publicado → `git push` (confira a branch: o push sem `--branch` vai para `main`).
+1. **Ponto de retomada:** rode `git status` e `git log --oneline origin/main..HEAD`. o trabalho foi publicado por push direto em fast-forward, sem PR — `main` e o branch andam juntos (confira com `git log --oneline main..HEAD`: vazio = iguais), então **não há PR a abrir** enquanto isso durar. Se quiser revisão a posteriori, reverta o intervalo em `main` num commit (`git revert --no-commit ae7001f..0fbe1be`) e abra o PR do branch, cujo diff volta a existir — sem force-push. Commit novo não publicado → `git push` (confira a branch: o push sem `--branch` vai para `main`).
 2. Antes de commitar qualquer mudança: `node .agents/scripts/check-all.js --library /tmp/kit` (clone: `git clone --depth 1 https://github.com/AftabIbrahimKazi/ai-dev-kit /tmp/kit`); tem que sair 3 passed, 0 failed.
 3. Se o kit for atualizado: rode o `kit-drift.js` **antes** do `update`, e re-promova só as skills cujo `SKILL.md` mudou.
 4. Se as skills three.js mudarem no repo: atualize `threejs-packs.json` no mesmo commit (o `packs-check.js` acusa).
