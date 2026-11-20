@@ -1,6 +1,6 @@
 # Handover — ProjetoCidadeInteligente_Unicap
 
-Updated: 2026-11-19 · Branch: `freebuff/5c1e5c3c1f3c632b95a00f32`
+Updated: 2026-11-20 · Branch: `freebuff/5c1e5c3c1f3c632b95a00f32`
 
 ## Current state
 
@@ -8,7 +8,7 @@ Repositório de notas (second-brain em Markdown) com o `ai-dev-kit` instalado po
 
 ## Last session
 
-Quatro frentes fechadas: kit instalado e reduzido ao que este repo usa (13 skills promovidas, 95 camadas de standard removidas, contrato conferido contra o instalador); as 36 skills three.js baixadas dos quatro repositórios de origem e versionadas; o mapa repo ↔ conta escrito e coberto por `packs-check.js`; e as três checagens do repo atrás de um comando único (`check-all.js`), com teste que impede qualquer uma de virar sempre-passa.
+Quatro frentes fechadas: kit instalado e reduzido ao que este repo usa (13 skills promovidas, 95 camadas de standard removidas, contrato conferido contra o instalador); as 36 skills three.js baixadas dos quatro repositórios de origem e versionadas; o mapa repo ↔ conta escrito e coberto por `packs-check.js`; e as três checagens do repo atrás de um comando único (`check-all.js`), com teste que impede qualquer uma de virar sempre-passa. No fim, o levantamento que separa os 45 exemplos citados que rodam dos 9 que são leitura só. Nada de skills ficou pendente: a carga das 36 está encerrada.
 
 ## Decisions & why
 
@@ -31,11 +31,12 @@ Quatro frentes fechadas: kit instalado e reduzido ao que este repo usa (13 skill
 - 9 dos 54 exemplos three.js citados pelos `SKILL.md` são leitura só — 5 por asset binário, 4 por shader/`.wgsl`/módulo de `assets/` que não foi copiado. A lista por exemplo, o que cada um pede e as duas ressalvas dos que rodam estão no `AGENTS.md`, seção "Exemplos citados".
 - O bloco `account` do `threejs-packs.json` é **registro**, não consulta ao vivo: `packs-check.js` detecta divergência entre mapa e registro, não entre mapa e plataforma. Re-promover na conta sem atualizar o JSON não é visto.
 - `kit-drift.js` precisa de clone da biblioteca; sem um, `check-all.js` reporta `SKIP` (visível) e não falha.
+- `main` recebeu o trabalho por push direto (fast-forward), não por PR: revisão e histórico de revisão não existiram. As contagens de `pr-body.md` acompanham `ae7001f..HEAD`, não um PR.
 - `git config user.name/email` não existem neste ambiente — commits exigem `-c user.name=… -c user.email=…` (use o e-mail do histórico: `79537972+pedromiguel777@users.noreply.github.com`).
 
 ## Next steps
 
-1. **Ponto de retomada:** rode `git status` e `git log --oneline origin/main..HEAD`. Commits não publicados → `git push` neste branch. Branch sem PR → abrir um para `main` (`gh pr create --base main --head freebuff/5c1e5c3c1f3c632b95a00f32`, ou a página de compare), com corpo citando kit, corte 105→10, skills three.js e as checagens. PR já mergeado → nada pendente aqui.
+1. **Ponto de retomada:** rode `git status` e `git log --oneline origin/main..HEAD`. `main` já recebeu o trabalho por push direto em fast-forward (`ae7001f..0fbe1be`), então **não há PR a abrir**: o branch e `main` são o mesmo commit. Se quiser revisão a posteriori, reverta o intervalo em `main` num commit (`git revert --no-commit ae7001f..0fbe1be`) e abra o PR do branch, cujo diff volta a existir — sem force-push. Commit novo não publicado → `git push` (confira a branch: o push sem `--branch` vai para `main`).
 2. Antes de commitar qualquer mudança: `node .agents/scripts/check-all.js --library /tmp/kit` (clone: `git clone --depth 1 https://github.com/AftabIbrahimKazi/ai-dev-kit /tmp/kit`); tem que sair 3 passed, 0 failed.
 3. Se o kit for atualizado: rode o `kit-drift.js` **antes** do `update`, e re-promova só as skills cujo `SKILL.md` mudou.
 4. Se as skills three.js mudarem no repo: atualize `threejs-packs.json` no mesmo commit (o `packs-check.js` acusa).
@@ -46,6 +47,6 @@ Quatro frentes fechadas: kit instalado e reduzido ao que este repo usa (13 skill
 - Não apagar os `SKILL.md` do repo (kit ou three.js), nem `.agents/skills/package.json` (shield CommonJS dos companions).
 - Não "consertar" os 22 WARN de `console.log` — são stdout das CLIs do kit.
 - Não instalar hooks de git: o diretório de hooks é comum a todos os worktrees desta máquina.
-- **`pr-body.md` é artefato local, ignorado pelo `.gitignore`** — é o corpo do PR para `gh pr create --body-file pr-body.md`. Não aparece no `git status` normal; `git status --ignored` mostra. Não forçar com `git add -f`: commitar colocaria o corpo do PR no próprio diff e mudaria as contagens que ele cita. Não apagar achando que é lixo. Se não existir, regenere com `git diff --shortstat origin/main..HEAD` e a lista de commits.
+- **`pr-body.md` é artefato local, ignorado pelo `.gitignore`** — registro da sessão e, se `main` for revertido, corpo do PR (`gh pr create --body-file pr-body.md`). Não aparece no `git status` normal; `git status --ignored` mostra. Não forçar com `git add -f`: commitar colocaria o corpo do PR no próprio diff e mudaria as contagens que ele cita. Não apagar achando que é lixo. Se não existir, regenere com `git diff --shortstat origin/main..HEAD` e a lista de commits.
 - `AGENTS.md` só é lido porque está na raiz; `.agents/skills/` não é auto-descoberto, o contrato é que manda carregar.
 - O corte dos standards é reversível mas não estável: qualquer reinstalação do kit desfaz. Refaça com o mesmo `rm` se acontecer.
