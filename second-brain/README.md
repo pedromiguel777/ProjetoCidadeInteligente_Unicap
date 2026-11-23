@@ -27,6 +27,7 @@ second-brain/
 ├── pessoas/                     ← cidadão, ética, governança
 ├── sustentabilidade/            ← clima, mobilidade, resíduos
 ├── projeto/                     ← escopo, método, prazos
+├── protótipo-cidade-inteligente-3d/  ← maquete 3D executável (app/) + capturas
 └── scripts/auditar_grafo.py     ← valida links e órfãs
 ```
 

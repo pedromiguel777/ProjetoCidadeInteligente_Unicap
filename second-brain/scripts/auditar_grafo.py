@@ -13,12 +13,16 @@ FENCE = re.compile(r"```.*?```", re.S)
 INLINE_CODE = re.compile(r"`[^`\n]*`")
 # arquivos que não são notas (documentação do cofre)
 NAO_NOTAS = {"README"}
+# pastas que não são o cofre: dependências do protótipo e configuração do Obsidian
+IGNORAR = {"node_modules", ".obsidian", ".git"}
 LINK = re.compile(r"\[\[([^\]]+)\]\]")
 
 
 def main() -> int:
     notes = {}
     for path in glob.glob(os.path.join(ROOT, "**", "*.md"), recursive=True):
+        if IGNORAR & set(os.path.relpath(path, ROOT).split(os.sep)):
+            continue
         name = os.path.splitext(os.path.basename(path))[0]
         notes[name] = path
 

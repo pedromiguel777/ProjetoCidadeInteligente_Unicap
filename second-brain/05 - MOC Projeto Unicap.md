@@ -2,7 +2,7 @@
 tipo: moc
 status: ativo
 tags: [moc, projeto, unicap, gestao]
-atualizado: 2026-11-13
+atualizado: 2026-11-23
 ---
 
 # 🎓 05 — MOC Projeto Unicap
@@ -20,6 +20,10 @@ O MOC de execução. Tudo aqui responde "o que **nós** vamos fazer, até quando
 - [[Cronograma e Entregas]] — fases e marcos.
 - [[Equipe e Papéis]] — quem faz o quê.
 - [[Riscos do Projeto]] — o que pode derrubar o cronograma e o plano B.
+
+## Entregáveis
+
+- [[Protótipo 3D da Cidade Inteligente]] — maquete isométrica navegável, executável em `second-brain/prototipo-cidade-inteligente-3d/app/`; é a peça de comunicação visual do projeto.
 
 ## Base
 
