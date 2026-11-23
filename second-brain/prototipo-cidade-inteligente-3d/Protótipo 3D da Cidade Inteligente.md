@@ -17,7 +17,9 @@ O objetivo não é simulação: é **comunicação visual** do conceito, para ap
 
 ## Como executar
 
-O executável já vem compilado em `app/dist/`. Três caminhos, do mais simples ao mais útil:
+**Link público (sem clonar, sem Node):** <https://cidade-inteligente-3d-prototipo-g48dfr-preview.freebuff.site> — abre direto no navegador. É o mesmo build de `app/dist/`, publicado em Freebuff Sites pelo manifesto `deploy/cidade-inteligente-3d/manifest.json`.
+
+Para rodar o executável na própria máquina, o build já vem compilado em `app/dist/`:
 
 | Caminho | Como | Precisa de quê |
 | --- | --- | --- |
