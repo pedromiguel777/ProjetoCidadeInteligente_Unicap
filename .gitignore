@@ -5,3 +5,4 @@ pr-body.md
 
 # Dependências do protótipo 3D (o build em dist/ é versionado; node_modules não)
 node_modules/
+.logs/

@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { createTextures } from "./textures.js";
 import { buildCity } from "./city.js";
+import { createNpcs } from "./npcs.js";
 
 const canvas = document.querySelector("#scene");
 
@@ -75,12 +76,14 @@ scene.add(fill);
 
 const textures = createTextures();
 const city = buildCity(scene, textures);
+const npcs = createNpcs(scene, { count: 96 });
 
 resize();
 window.addEventListener("resize", resize);
 
 window.__cityApp = { renderer, scene, camera, controls };
 window.__cityVehicles = city.vehicles;
+window.__cityNpcs = npcs;
 window.__cityLod = { get level() { return lodLevel; }, count: city.lodLevels };
 
 let qualityLevel = 0;
@@ -95,7 +98,7 @@ function degradeQuality(level) {
     pixelCap = Math.min(pixelCap, 1);
   } else {
     pixelCap = 0.85;
-    const reduced = new Set(["tree", "person", "car", "crop"]);
+    const reduced = new Set(["tree", "person", "car", "crop", "npc"]);
     scene.traverse((object) => {
       if (object.isInstancedMesh && reduced.has(object.userData.prop)) {
         object.count = Math.max(1, Math.floor(object.count * 0.45));
@@ -121,16 +124,23 @@ let fpsFrames = 0;
 let costSum = 0;
 let fpsStart = performance.now();
 
+let previousTime = 0;
+
 function tick() {
   const t = clock.getElapsedTime();
+  const dt = Math.max(0, t - previousTime);
+  previousTime = t;
   city.update(t);
+  npcs.update(dt, t);
   city.setLabelsVisible(camera.zoom > 1.55);
   if (camera.zoom > 1.55 && lodLevel !== 1) {
     lodLevel = 1;
     city.setLodLevel(1);
+    npcs.setLodLevel(1);
   } else if (camera.zoom < 1.45 && lodLevel !== 0) {
     lodLevel = 0;
     city.setLodLevel(0);
+    npcs.setLodLevel(0);
   }
   controls.update();
   const costStart = performance.now();

@@ -2,7 +2,7 @@
 tipo: nota
 status: ativo
 tags: [prototipo, threejs, visualizacao, entregavel]
-atualizado: 2026-11-23
+atualizado: 2026-11-24
 ---
 
 # Protótipo 3D da Cidade Inteligente
@@ -34,8 +34,14 @@ Controles: arraste para orbitar, roda do mouse ou pinça para o zoom — de 0,7�
 ## O que olhar em cada zoom
 
 - **1× (visão geral):** a malha de 16 quadras, o anel verde de amortecimento e o eixo comercial cruzando o centro.
-- **2–4×:** telhados fotovoltaicos, aquecedores solares, ônibus e carros circulando, robôs de coleta, calçada cinética.
-- **6×:** telha cerâmica, cobogó, varanda, azulejo, canteiros e o pátio da escola.
+- **2–4×:** telhados fotovoltaicos, aquecedores solares, ônibus e carros circulando, robôs de coleta, calçada cinética, pedestres circulando.
+- **6×:** telha cerâmica, cobogó, varanda, azulejo, canteiros, o pátio da escola e os pedestres andando pelas calçadas.
+
+## Pedestres
+
+96 NPCs articulados (tronco, cabeça, braços e pernas em `InstancedMesh` — 7 draw calls para a cidade inteira) percorrem as calçadas dos 16 quarteirões em `app/src/npcs.js`. Cada um sorteia sua própria rotina: andar (com ciclo de passo e balanço de braços), parar e olhar em volta, conversar de frente para o pedestre mais próximo, ou acenar. Durações de 1 a 10 s por estado, escolhidas por peso, de modo que a multidão nunca fica sincronizada.
+
+O pack de personagens do CGTrader (Casual Character Pack Lite) ainda **não** está no repositório: o download exige conta logada no site e o servidor bloqueou o acesso anônimo (HTTP 202 sem conteúdo). Para trocar os bonecos procedurais pelos personagens do pack, basta baixar o ZIP com a conta de vocês, colocar o `.glb` em `app/public/` e avisar — a animação (Mixamo) e a malha de percursos já estão prontas, só muda a fonte visual.
 
 ## Capturas
 
