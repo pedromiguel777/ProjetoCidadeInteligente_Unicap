@@ -34,7 +34,7 @@ Controles: arraste para orbitar, roda do mouse ou pinça para o zoom — de 0,7�
 ## O que olhar em cada zoom
 
 - **1× (visão geral):** a malha de 16 quadras, o anel verde de amortecimento e o eixo comercial cruzando o centro.
-- **2–4×:** telhados fotovoltaicos, aquecedores solares, ônibus e carros circulando, robôs de coleta, calçada cinética, pedestres circulando.
+- **2–4×:** telhados fotovoltaicos, aquecedores solares, ônibus e carros circulando, robôs de coleta, calçada cinética, pedestres circulando e o reator da micro-rede (torre de anéis de plasma, ampliada para 2,4× o tamanho original).
 - **6×:** telha cerâmica, cobogó, varanda, azulejo, canteiros, o pátio da escola e os pedestres andando pelas calçadas.
 
 ## Pedestres

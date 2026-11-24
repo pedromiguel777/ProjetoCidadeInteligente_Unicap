@@ -1191,15 +1191,18 @@ export function buildCity(scene, tex) {
     }
 
     // hub pylon + conduits
-    addMesh(root, new THREE.CylinderGeometry(1.6, 2.0, 0.8, 12), mats.dark, cx + 2, GROUND + 0.4, cz + 26);
-    addMesh(root, new THREE.CylinderGeometry(0.5, 0.62, 5.4, 10), mats.metal, cx + 2, GROUND + 3.1, cz + 26);
+    const hubScale = 2.4;
+    const hubX = cx + 2;
+    const hubZ = cz + 26;
+    addMesh(root, new THREE.CylinderGeometry(1.6 * hubScale, 2.0 * hubScale, 0.8 * hubScale, 12), mats.dark, hubX, GROUND + 0.4 * hubScale, hubZ);
+    addMesh(root, new THREE.CylinderGeometry(0.5 * hubScale, 0.62 * hubScale, 5.4 * hubScale, 10), mats.metal, hubX, GROUND + 3.1 * hubScale, hubZ);
     for (let i = 0; i < 3; i += 1) {
-      const ringMesh = new THREE.Mesh(new THREE.TorusGeometry(1.5 - i * 0.3, 0.09, 5, 20), mats.glow);
+      const ringMesh = new THREE.Mesh(new THREE.TorusGeometry((1.5 - i * 0.3) * hubScale, 0.09 * hubScale, 5, 20), mats.glow);
       ringMesh.rotation.x = Math.PI / 2;
-      ringMesh.position.set(cx + 2, GROUND + 2.4 + i * 1.4, cz + 26);
+      ringMesh.position.set(hubX, GROUND + (2.4 + i * 1.4) * hubScale, hubZ);
       root.add(ringMesh);
     }
-    addMesh(root, new THREE.SphereGeometry(0.45, 10, 8), mats.glow, cx + 2, GROUND + 6.1, cz + 26, false);
+    addMesh(root, new THREE.SphereGeometry(0.45 * hubScale, 10, 8), mats.glow, hubX, GROUND + 6.1 * hubScale, hubZ, false);
 
     // robot depot
     addMesh(root, new THREE.BoxGeometry(16, 0.3, 12), mats.paving, cx - 16, GROUND + 0.15, cz + 34, false);
