@@ -272,10 +272,10 @@ const pv = makeTexture(512, 384, (ctx, w, h) => {
 
 const smartWalk = makeTexture(256, 512, (ctx, w, h) => {
   ctx.clearRect(0, 0, w, h);
-  ctx.fillStyle = "rgba(186,240,246,0.26)";
+  ctx.fillStyle = "rgba(28, 134, 76, 0.86)";
   ctx.fillRect(0, 0, w, h);
-  ctx.strokeStyle = "rgba(255,255,255,0.22)";
-  ctx.lineWidth = 2;
+  ctx.strokeStyle = "rgba(255,255,255,0.4)";
+  ctx.lineWidth = 3;
   for (let x = 0; x <= w; x += 64) {
     ctx.beginPath();
     ctx.moveTo(x, 0);
@@ -288,17 +288,25 @@ const smartWalk = makeTexture(256, 512, (ctx, w, h) => {
     ctx.lineTo(w, y);
     ctx.stroke();
   }
-  ctx.lineWidth = 13;
+  ctx.strokeStyle = "rgba(255,255,255,0.55)";
+  ctx.lineWidth = 7;
+  for (const x of [3, w - 3]) {
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, h);
+    ctx.stroke();
+  }
+  ctx.lineWidth = 15;
   ctx.lineJoin = "round";
-  ctx.shadowColor = "rgba(120,255,240,0.95)";
-  ctx.shadowBlur = 22;
-  ctx.strokeStyle = "rgba(226,255,252,0.92)";
+  ctx.shadowColor = "rgba(180, 255, 214, 0.9)";
+  ctx.shadowBlur = 18;
+  ctx.strokeStyle = "rgba(236, 255, 244, 0.92)";
   for (let i = 0; i < 2; i += 1) {
     const y = 64 + i * 256;
     ctx.beginPath();
-    ctx.moveTo(46, y + 74);
+    ctx.moveTo(52, y + 74);
     ctx.lineTo(128, y);
-    ctx.lineTo(210, y + 74);
+    ctx.lineTo(204, y + 74);
     ctx.stroke();
   }
   ctx.shadowBlur = 0;

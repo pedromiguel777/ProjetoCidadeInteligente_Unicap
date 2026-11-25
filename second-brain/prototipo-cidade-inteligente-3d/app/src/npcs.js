@@ -1,16 +1,14 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { clone as cloneSkinned } from "three/addons/utils/SkeletonUtils.js";
+import { WALK_OFFSET, WALK_SURFACE } from "./city.js";
 
-const BLOCK = 108;
-const HALF = BLOCK / 2;
-const GROUND = 0.33;
 const COL = [-195, -65, 65, 195];
 const ROW = [-195, -65, 65, 195];
 
 const MODEL_COUNT = 5;
 const MODEL_URL = (index) => `${import.meta.env.BASE_URL}npcs/npc_${index}.glb`;
-const CLIP_SPEED = 1.45;
+const FALLBACK_STRIDE = 1.45;
 const FADE = 0.22;
 
 const PERIMETER = (npc) => 8 * npc.half;
@@ -43,9 +41,52 @@ function normalizeName(name) {
   return name.toLowerCase().replace(/[^a-z0-9]/g, "");
 }
 
+function measureStride(template, clip) {
+  if (clip.duration <= 0) return 0;
+  const probe = cloneSkinned(template);
+  probe.updateMatrixWorld(true);
+  const mixer = new THREE.AnimationMixer(probe);
+  mixer.clipAction(clip).play();
+  const feet = [];
+  probe.traverse((object) => {
+    if (object.isBone && /^(foot|toe)/i.test(object.name)) feet.push(object);
+  });
+  if (!feet.length) return 0;
+
+  const frames = 48;
+  const step = clip.duration / frames;
+  const track = new Float32Array(feet.length * (frames + 1) * 4);
+  const point = new THREE.Vector3();
+  for (let frame = 0; frame <= frames; frame += 1) {
+    mixer.setTime(frame * step);
+    probe.updateMatrixWorld(true);
+    feet.forEach((foot, index) => {
+      foot.getWorldPosition(point);
+      const base = (index * (frames + 1) + frame) * 4;
+      track[base] = frame * step;
+      track[base + 1] = point.x;
+      track[base + 2] = point.y;
+      track[base + 3] = point.z;
+    });
+  }
+
+  const travelSpeeds = [];
+  for (let foot = 0; foot < feet.length; foot += 1) {
+    let travel = 0;
+    for (let frame = 1; frame <= frames; frame += 1) {
+      const base = (foot * (frames + 1) + frame) * 4;
+      travel += Math.hypot(track[base + 1] - track[base - 3], track[base + 3] - track[base - 1]);
+    }
+    if (clip.duration > 0) travelSpeeds.push(travel / clip.duration);
+  }
+  travelSpeeds.sort((a, b) => a - b);
+  return travelSpeeds.length ? travelSpeeds[Math.floor(travelSpeeds.length / 2)] : 0;
+}
+
 export function createNpcs(scene, { count = 40 } = {}) {
   const npcs = [];
   const models = [];
+  const strideByClip = new Map();
   let clips = [];
   let lodLevel = 0;
   let loadedModels = 0;
@@ -57,11 +98,13 @@ export function createNpcs(scene, { count = 40 } = {}) {
     npcs.push({
       cx,
       cz,
-      half: HALF + 1.4 + Math.random() * 2.0,
+      half: WALK_OFFSET,
       progress: Math.random(),
       dir: Math.random() < 0.5 ? -1 : 1,
-      speed: 1.5 + Math.random() * 0.9,
-      scale: 0.66 + Math.random() * 0.1,
+      speed: 1.2,
+      stride: 0,
+      walkRate: 1,
+      scale: 0.8 + Math.random() * 0.1,
       state: "walk",
       stateTime: 2 + Math.random() * 5,
       x: cx,
@@ -87,7 +130,7 @@ export function createNpcs(scene, { count = 40 } = {}) {
   function play(npc, state) {
     const next = actionFor(npc, state);
     if (!next) return;
-    const rate = state === "walk" ? npc.speed / CLIP_SPEED : 1;
+    const rate = state === "walk" ? npc.walkRate : 1;
     if (npc.action === next) {
       next.setEffectiveTimeScale(rate);
       return;
@@ -106,7 +149,7 @@ export function createNpcs(scene, { count = 40 } = {}) {
     if (!template || npc.model || !clips.length) return;
     const model = cloneSkinned(template);
     model.scale.setScalar(npc.scale);
-    model.position.set(npc.x, GROUND, npc.z);
+    model.position.set(npc.x, WALK_SURFACE, npc.z);
     model.rotation.y = npc.yaw;
     model.traverse((object) => {
       if (object.isMesh) {
@@ -127,6 +170,11 @@ export function createNpcs(scene, { count = 40 } = {}) {
     npc.actions = actions;
     npc.walkKey = npc.variant % 2 === 0 ? "walk001" : "walk002";
     if (!actions.has(npc.walkKey)) npc.walkKey = "walk001";
+    const templateScale = template.scale.x || 1;
+    const measured = strideByClip.get(npc.walkKey) ?? FALLBACK_STRIDE;
+    npc.stride = measured * (npc.scale / templateScale);
+    npc.speed = npc.stride * (0.86 + Math.random() * 0.12);
+    npc.walkRate = npc.stride > 0.05 ? npc.speed / npc.stride : 1;
     play(npc, npc.state);
   }
 
@@ -138,6 +186,12 @@ export function createNpcs(scene, { count = 40 } = {}) {
     const animated = (gltf) => gltf.animations.some((clip) => clip.tracks.some((track) => track.times.length > 2));
     const source = gltfs.find(animated) ?? gltfs[0];
     clips = source.animations.map(withoutRootMotion);
+    for (const clip of clips) {
+      const key = normalizeName(clip.name);
+      if (!key.startsWith("walk") || strideByClip.has(key)) continue;
+      const measured = measureStride(source.scene, clip);
+      if (measured > 0.2 && measured < 12) strideByClip.set(key, measured);
+    }
 
     gltfs.forEach((gltf, index) => {
       const template = gltf.scene;
@@ -218,7 +272,7 @@ export function createNpcs(scene, { count = 40 } = {}) {
       if (npc.stateTime <= 0) nextState(npc);
 
       if (!npc.model) continue;
-      npc.model.position.set(npc.x, GROUND, npc.z);
+      npc.model.position.set(npc.x, WALK_SURFACE, npc.z);
       npc.model.rotation.y = npc.yaw;
       if (npc.mixer && lodLevel >= 1) npc.mixer.update(step);
     }
@@ -243,16 +297,38 @@ export function createNpcs(scene, { count = 40 } = {}) {
         if (i % 2 === 0 && npcs[i].model) npcs[i].model.visible = false;
       }
     },
+    activity() {
+      const positions = [];
+      let walking = 0;
+      for (const npc of npcs) {
+        if (npc.state !== "walk") continue;
+        walking += 1;
+        positions.push({ x: npc.x, z: npc.z, cx: npc.cx, cz: npc.cz });
+      }
+      return { walking, positions };
+    },
     snapshot() {
       const states = {};
       for (const npc of npcs) states[npc.state] = (states[npc.state] || 0) + 1;
+      const attached = npcs.filter((npc) => npc.model);
+      const scales = attached.map((npc) => npc.scale);
       return {
         count: npcs.length,
         states,
         models: loadedModels,
-        attached: npcs.filter((npc) => npc.model).length,
-        playing: npcs.filter((npc) => npc.action && npc.action.isRunning()).length,
+        attached: attached.length,
+        playing: attached.filter((npc) => npc.action && npc.action.isRunning()).length,
         clips: [...(npcs.find((npc) => npc.actions)?.actions.keys() ?? [])],
+        scale: scales.length ? { min: Math.min(...scales), max: Math.max(...scales) } : null,
+        stride: [...strideByClip.entries()].map(([key, value]) => ({ clip: key, unitsPerSecond: value })),
+        walk: attached.slice(0, 5).map((npc) => ({
+          clip: npc.walkKey,
+          scale: npc.scale,
+          stride: npc.stride,
+          speed: npc.speed,
+          rate: npc.walkRate,
+        })),
+        walking: npcs.filter((npc) => npc.state === "walk").length,
       };
     },
   };

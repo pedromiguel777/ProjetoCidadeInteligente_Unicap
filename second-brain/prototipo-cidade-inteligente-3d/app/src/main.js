@@ -3,6 +3,7 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { createTextures } from "./textures.js";
 import { buildCity } from "./city.js";
 import { createNpcs } from "./npcs.js";
+import { createEnergyView } from "./energy.js";
 
 const canvas = document.querySelector("#scene");
 
@@ -51,7 +52,8 @@ function resize() {
   renderer.setSize(width, height, false);
 }
 
-scene.add(new THREE.HemisphereLight(0xecf8ff, 0x62814f, 1.45));
+const hemi = new THREE.HemisphereLight(0xecf8ff, 0x62814f, 1.45);
+scene.add(hemi);
 
 const sun = new THREE.DirectionalLight(0xfff2d8, 2.65);
 sun.position.set(560, 800, 340);
@@ -77,6 +79,7 @@ scene.add(fill);
 const textures = createTextures();
 const city = buildCity(scene, textures);
 const npcs = createNpcs(scene, { count: 96 });
+const energy = createEnergyView(scene, { city, npcs });
 
 resize();
 window.addEventListener("resize", resize);
@@ -84,6 +87,7 @@ window.addEventListener("resize", resize);
 window.__cityApp = { renderer, scene, camera, controls };
 window.__cityVehicles = city.vehicles;
 window.__cityNpcs = npcs;
+window.__cityEnergy = energy;
 window.__cityLod = { get level() { return lodLevel; }, count: city.lodLevels };
 
 let qualityLevel = 0;
@@ -119,20 +123,66 @@ function degradeQuality(level) {
 
 window.__cityDegrade = degradeQuality;
 
+const baseLights = {
+  sun: sun.intensity,
+  hemi: hemi.intensity,
+  fill: fill.intensity,
+  exposure: renderer.toneMappingExposure,
+};
+const energyToggle = document.getElementById("energy-toggle");
+const energyLabel = document.getElementById("energy-toggle-label");
+const energyPanel = document.getElementById("energy-panel");
+
+function setEnergyMode(active) {
+  energy.setActive(active);
+  document.body.classList.toggle("energy-mode", active);
+  scene.background = active ? new THREE.Color(0x06161c) : null;
+  sun.intensity = active ? 0.85 : baseLights.sun;
+  hemi.intensity = active ? 0.55 : baseLights.hemi;
+  fill.intensity = active ? 0.22 : baseLights.fill;
+  renderer.toneMappingExposure = active ? 1.12 : baseLights.exposure;
+  if (energyToggle) energyToggle.setAttribute("aria-pressed", String(active));
+  if (energyLabel) energyLabel.textContent = active ? "Voltar ao protótipo" : "Ver fluxo de energia";
+  if (energyPanel) energyPanel.hidden = !active;
+  window.__cityEnergyMode = active;
+}
+
+if (energyToggle) energyToggle.addEventListener("click", () => setEnergyMode(!energy.active));
+window.addEventListener("keydown", (event) => {
+  if (event.key === "e" || event.key === "E") setEnergyMode(!energy.active);
+});
+window.__citySetEnergyMode = setEnergyMode;
+
+const SIM_HZ = 165;
+const SIM_STEP = 1 / SIM_HZ;
+const MAX_STEPS = 42;
+window.__citySim = { hz: SIM_HZ };
+
 const clock = new THREE.Clock();
 let frames = 0;
 let fpsFrames = 0;
 let costSum = 0;
 let fpsStart = performance.now();
+let simTime = 0;
+let accumulator = 0;
 
 let previousTime = 0;
 
 function tick() {
-  const t = clock.getElapsedTime();
-  const dt = Math.max(0, t - previousTime);
-  previousTime = t;
-  city.update(t);
-  npcs.update(dt, t);
+  const elapsed = clock.getElapsedTime();
+  const frameDt = Math.min(Math.max(0, elapsed - previousTime), 0.25);
+  previousTime = elapsed;
+  accumulator += frameDt;
+  let steps = 0;
+  while (accumulator >= SIM_STEP && steps < MAX_STEPS) {
+    simTime += SIM_STEP;
+    city.update(simTime);
+    npcs.update(SIM_STEP, simTime);
+    energy.update(SIM_STEP, simTime);
+    accumulator -= SIM_STEP;
+    steps += 1;
+  }
+  if (steps === MAX_STEPS) accumulator = 0;
   city.setLabelsVisible(camera.zoom > 1.55);
   if (camera.zoom > 1.55 && lodLevel !== 1) {
     lodLevel = 1;

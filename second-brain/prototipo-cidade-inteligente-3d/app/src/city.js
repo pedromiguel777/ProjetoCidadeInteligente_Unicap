@@ -7,6 +7,11 @@ const HALF = BLOCK / 2;
 const COL = [-195, -65, 65, 195];
 const ROW = [-195, -65, 65, 195];
 
+export const WALK_OFFSET = 51.4;
+export const WALK_SURFACE = 0.305;
+const STRIP_WIDTH = 3.8;
+const HUB = { x: 197, z: 221 };
+
 const PROGRAMS = [
   ["school", "res", "res", "farm"],
   ["res", "school", "commerce", "res"],
@@ -329,6 +334,7 @@ export function buildCity(scene, tex) {
     telha: new THREE.MeshStandardMaterial({ map: tex.telha, roughness: 0.95 }),
     azulejo: new THREE.MeshStandardMaterial({ map: tex.azulejo, roughness: 0.55 }),
     cobogo: new THREE.MeshStandardMaterial({ map: tex.cobogo, roughness: 0.9 }),
+    sidewalk: std(0xf8f4ea, { roughness: 0.95 }),
   };
 
   const labelSprites = [];
@@ -350,6 +356,10 @@ export function buildCity(scene, tex) {
   const dashes = [];
   const stripes = [];
   const smartStrips = [];
+  const stripNodes = [];
+  const energyNodes = [];
+  const roofPoints = [];
+  const digesters = [];
 
   function addMesh(parent, geometry, material, x = 0, y = 0, z = 0, cast = true) {
     const mesh = new THREE.Mesh(geometry, material);
@@ -544,14 +554,32 @@ export function buildCity(scene, tex) {
   }
 
   // ---------- street furniture prototypes ----------
-  const smartGeo = new THREE.PlaneGeometry(98, 2.4);
+  const smartGeo = new THREE.PlaneGeometry(98, STRIP_WIDTH);
   smartGeo.rotateX(-Math.PI / 2);
   tilePlaneUV(smartGeo, 1, 13);
+
+  const sidewalkShape = new THREE.Shape();
+  sidewalkShape.moveTo(-HALF, -HALF);
+  sidewalkShape.lineTo(HALF, -HALF);
+  sidewalkShape.lineTo(HALF, HALF);
+  sidewalkShape.lineTo(-HALF, HALF);
+  sidewalkShape.closePath();
+  const sidewalkHole = new THREE.Path();
+  sidewalkHole.moveTo(-HALF + 6, -HALF + 6);
+  sidewalkHole.lineTo(-HALF + 6, HALF - 6);
+  sidewalkHole.lineTo(HALF - 6, HALF - 6);
+  sidewalkHole.lineTo(HALF - 6, -HALF + 6);
+  sidewalkHole.closePath();
+  sidewalkShape.holes.push(sidewalkHole);
+  const sidewalkBand = new THREE.ShapeGeometry(sidewalkShape);
+  sidewalkBand.rotateX(-Math.PI / 2);
 
   // ---------- blocks ----------
   function blockBase(cx, cz, kind, program) {
     const plate = addMesh(root, new THREE.BoxGeometry(BLOCK, 0.56, BLOCK), mats.paving, cx, 0, cz);
     plate.castShadow = false;
+    const band = addMesh(root, sidewalkBand, mats.sidewalk, cx, 0.295, cz, false);
+    band.receiveShadow = true;
     const innerMaterial = kind === "res" || kind === "farm" ? mats.grass : mats.paving;
     const pad = addMesh(
       root,
@@ -565,11 +593,15 @@ export function buildCity(scene, tex) {
 
     for (let i = 0; i < 4; i += 1) {
       const ry = (i * Math.PI) / 2;
-      const off = 52.6;
-      const x = cx + Math.sin(ry) * off;
-      const z = cz + Math.cos(ry) * off;
-      smartStrips.push(matrix(x, GROUND + 0.02, z, ry));
+      const x = cx + Math.sin(ry) * WALK_OFFSET;
+      const z = cz + Math.cos(ry) * WALK_OFFSET;
+      smartStrips.push(matrix(x, WALK_SURFACE, z, ry));
+      stripNodes.push({ x, z, ry, cx, cz });
     }
+
+    const sx = Math.sign(HUB.x - cx) || 1;
+    const sz = Math.sign(HUB.z - cz) || 1;
+    energyNodes.push({ x: cx + sx * (WALK_OFFSET + 1.4), z: cz + sz * (WALK_OFFSET + 1.4), cx, cz });
 
     for (const edge of [0, 1, 2, 3]) {
       const ry = (edge * Math.PI) / 2;
@@ -651,6 +683,7 @@ export function buildCity(scene, tex) {
       false,
     );
     deck.geometry = tilePlaneUV(deck.geometry, (w - 1.4) / 4, (d - 1.4) / 4);
+    roofPoints.push({ x, z, y: GROUND + h + 2.4 });
 
     if (roof !== "green") {
       const rows = Math.max(1, Math.floor((d - 5.6) / 3.1));
@@ -753,6 +786,7 @@ export function buildCity(scene, tex) {
       slab.rotation.z = -side * angle;
     }
     addMesh(group, new THREE.BoxGeometry(0.7, 0.26, ridgeLen + 0.2), mats.telha, 0, h + rise + 0.06, 0);
+    roofPoints.push({ x, z, y: GROUND + h + rise + 2.2 });
 
     const shape = new THREE.Shape();
     shape.moveTo(-halfSpan, 0);
@@ -928,6 +962,7 @@ export function buildCity(scene, tex) {
   }
 
   function biodigester(cx, cz, radius) {
+    digesters.push({ x: cx, z: cz, y: GROUND + 1.1 });
     const dome = new THREE.Mesh(
       new THREE.SphereGeometry(radius, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2),
       mats.dome,
@@ -1192,8 +1227,8 @@ export function buildCity(scene, tex) {
 
     // hub pylon + conduits
     const hubScale = 2.4;
-    const hubX = cx + 2;
-    const hubZ = cz + 26;
+    const hubX = HUB.x;
+    const hubZ = HUB.z;
     addMesh(root, new THREE.CylinderGeometry(1.6 * hubScale, 2.0 * hubScale, 0.8 * hubScale, 12), mats.dark, hubX, GROUND + 0.4 * hubScale, hubZ);
     addMesh(root, new THREE.CylinderGeometry(0.5 * hubScale, 0.62 * hubScale, 5.4 * hubScale, 10), mats.metal, hubX, GROUND + 3.1 * hubScale, hubZ);
     for (let i = 0; i < 3; i += 1) {
@@ -1453,7 +1488,7 @@ export function buildCity(scene, tex) {
   label("MICRO-REDE LOCAL", "baterias + solar + recarga", 195, 195, 38);
   label("AGRICULTURA URBANA", "estufas · hortas · biodigestores", 65, 195, 30);
   label("COLETA AUTÔNOMA", "robôs com braços mecânicos", 65, -195, 28);
-  label("CALÇADA CINÉTICA", "piso translúcido que gera energia", -130, -130, 22);
+  label("CALÇADA CINÉTICA", "piso verde que gera energia a cada passo", -65, -116.4, 18);
   label("BAIRRO RESIDENCIAL", "casas de telha cerâmica, varanda e azulejo", -195, 195, 26);
   label("EIXO COMERCIAL", "torres envidraçadas e comércio de rua", 65, -65, 34);
 
@@ -1490,6 +1525,18 @@ export function buildCity(scene, tex) {
     update,
     root,
     vehicles: { buses: buses.map((bus) => bus.mesh), trams: [tramA, tramB] },
+    dynamics: {
+      buses: buses.map((bus) => bus.mesh),
+      trams: [tramA, tramB],
+      robots: robots.map((robot) => robot.group),
+    },
+    energy: {
+      hub: { x: HUB.x, y: GROUND + 3.2, z: HUB.z },
+      nodes: energyNodes,
+      strips: stripNodes,
+      roofs: roofPoints,
+      digesters,
+    },
     setLabelsVisible(visible) {
       for (const sprite of labelSprites) sprite.visible = visible;
     },
