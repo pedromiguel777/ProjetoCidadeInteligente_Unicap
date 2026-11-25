@@ -104,6 +104,7 @@ function degradeQuality(level) {
         object.count = Math.max(1, Math.floor(object.count * 0.45));
       }
     });
+    npcs.degrade();
   }
   scene.traverse((object) => {
     if (!object.material) return;

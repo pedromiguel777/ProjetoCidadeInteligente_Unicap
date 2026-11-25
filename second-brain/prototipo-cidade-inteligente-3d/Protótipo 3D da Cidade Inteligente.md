@@ -39,9 +39,11 @@ Controles: arraste para orbitar, roda do mouse ou pinça para o zoom — de 0,7�
 
 ## Pedestres
 
-96 NPCs articulados (tronco, cabeça, braços e pernas em `InstancedMesh` — 7 draw calls para a cidade inteira) percorrem as calçadas dos 16 quarteirões em `app/src/npcs.js`. Cada um sorteia sua própria rotina: andar (com ciclo de passo e balanço de braços), parar e olhar em volta, conversar de frente para o pedestre mais próximo, ou acenar. Durações de 1 a 10 s por estado, escolhidas por peso, de modo que a multidão nunca fica sincronizada.
+96 NPCs percorrem as calçadas dos 16 quarteirões em `app/src/npcs.js`. Cada um sorteia sua própria rotina: andar (clipe `Walk.001`/`Walk.002`), parar e olhar em volta (`Idle`), conversar de frente para o pedestre mais próximo (`Idle`, com deslocamento de tempo sorteado) ou dançar (`Dance`). Durações de 1 a 10 s por estado, escolhidas por peso, de modo que a multidão nunca fica sincronizada.
 
-O pack de personagens do CGTrader (Casual Character Pack Lite) ainda **não** está no repositório: o download exige conta logada no site e o servidor bloqueou o acesso anônimo (HTTP 202 sem conteúdo). Para trocar os bonecos procedurais pelos personagens do pack, basta baixar o ZIP com a conta de vocês, colocar o `.glb` em `app/public/` e avisar — a animação (Mixamo) e a malha de percursos já estão prontas, só muda a fonte visual.
+Os personagens são o pack **Low Poly Characters Set Free** do CGTrader, riggado e já animado — o `.blend` original está em `3d-source/` e os glTF em `app/public/npcs/` (ver o README de lá). Foram unidos em uma malha por personagem (1 draw call por NPC) e a textura foi reduzida para 512 px em WebP; os 5 personagens compartilham os mesmos clipes porque o rig de 70 bones é idêntico. A taxa do clipe de caminhada acompanha a velocidade de cada pedestre, então o pé não desliza.
+
+Custo: 96 malhas animadas somam ~96 draw calls e ~0,55 M triângulos (o dobro com sombras ligadas, acima de 1,55× de zoom). Em 6× a cena fica em ~2,2 M triângulos e 441 chamadas; por isso a qualidade adaptativa esconde metade dos pedestres no nível 2.
 
 ## Capturas
 
