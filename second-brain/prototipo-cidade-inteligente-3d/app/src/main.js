@@ -176,13 +176,20 @@ function tick() {
   let steps = 0;
   while (accumulator >= SIM_STEP && steps < MAX_STEPS) {
     simTime += SIM_STEP;
-    city.update(simTime);
     npcs.update(SIM_STEP, simTime);
-    energy.update(SIM_STEP, simTime);
     accumulator -= SIM_STEP;
     steps += 1;
   }
   if (steps === MAX_STEPS) accumulator = 0;
+  city.update(simTime);
+  const halfWidth = (camera.right - camera.left) / (2 * camera.zoom);
+  const halfHeight = (camera.top - camera.bottom) / (2 * camera.zoom);
+  npcs.animate(frameDt, {
+    x: controls.target.x,
+    z: controls.target.z,
+    radius: Math.hypot(halfWidth, halfHeight) + 6,
+  });
+  energy.update(frameDt, simTime);
   city.setLabelsVisible(camera.zoom > 1.55);
   if (camera.zoom > 1.55 && lodLevel !== 1) {
     lodLevel = 1;
@@ -206,6 +213,8 @@ function tick() {
     const cost = costSum / fpsFrames;
     const readout = document.getElementById("fps");
     if (readout) readout.textContent = String(fps);
+    const costReadout = document.getElementById("cost");
+    if (costReadout) costReadout.textContent = cost.toFixed(1);
     fpsFrames = 0;
     costSum = 0;
     fpsStart = now;

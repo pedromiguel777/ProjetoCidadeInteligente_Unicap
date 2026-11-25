@@ -274,7 +274,15 @@ export function createNpcs(scene, { count = 40 } = {}) {
       if (!npc.model) continue;
       npc.model.position.set(npc.x, WALK_SURFACE, npc.z);
       npc.model.rotation.y = npc.yaw;
-      if (npc.mixer && lodLevel >= 1) npc.mixer.update(step);
+    }
+  }
+
+  function animate(dt, view) {
+    if (lodLevel < 1 || dt <= 0) return;
+    for (const npc of npcs) {
+      if (!npc.mixer || !npc.model || !npc.model.visible) continue;
+      if (view && Math.hypot(npc.x - view.x, npc.z - view.z) > view.radius) continue;
+      npc.mixer.update(dt);
     }
   }
 
@@ -282,6 +290,7 @@ export function createNpcs(scene, { count = 40 } = {}) {
 
   return {
     update,
+    animate,
     count: npcs.length,
     setLodLevel(level) {
       lodLevel = level;

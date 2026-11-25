@@ -53,7 +53,7 @@ Os 96 percursos ficam a **51,4 unidades** do centro de cada quarteirão — exat
 
 A escala subiu para 0,80–0,90 (≈1,55–1,75 unidades de altura, ~20% maior que antes). A velocidade de cada pedestre não é sorteada: na carga, `npcs.js` amostra 48 quadros de `Walk.001`/`Walk.002`, soma o deslocamento horizontal de `footL`/`footR`/`toeL`/`toeR` por ciclo e usa a mediana como velocidade de solo (≈2,2 unidades/s no modelo, ~1,8 no mundo depois da escala). O `timeScale` da caminhada é `velocidade / (passada × escala)`, então o avanço do corpo casa com o pé. A fórmula anterior ignorava a escala do modelo e deixava ~30% de deslize; o resíduo que resta é do próprio clipe, cuja fase de apoio varia entre 1,65 e 3,02 unidades/s.
 
-O laço roda a **simulação a 165 Hz** (passo fixo de 1/165 s com acumulador), independente do refresh do monitor: passos, mixers, veículos e pulsos de energia são avaliados 165 vezes por segundo, e o desenho acontece a cada quadro. Em navegador remoto o HUD mostra 1–4 fps de apresentação, mas a simulação continua a 165 Hz.
+O laço roda **só a lógica dos pedestres a 165 Hz** (passo fixo de 1/165 s com acumulador), independente do refresh do monitor — custa 0,025 ms por passo, ou 0,07 ms por quadro a 60 fps. Os 96 mixers ficam **fora** desse laço: são atualizados uma vez por quadro e só para quem está dentro da vista (0,51 ms em 6× contra 3,94 ms para os 96). Veículos e pulsos de energia também rodam uma vez por quadro. A primeira versão colocava os mixers dentro do passo de 165 Hz e multiplicava o custo por 2,75 (5 ms por quadro em LOD alto); foi corrigida.
 
 ## Energia em movimento
 
@@ -79,7 +79,7 @@ Todos os números do painel são de simulação (não há sensores): o rodapé d
 
 ## Limitações conhecidas
 
-- A cena renderiza em ~1,4 ms por frame em GPU dedicada; o contador de FPS do HUD mede a taxa de apresentação do navegador. Em navegador remoto/streaming esse número cai para 1–4 fps mesmo com a cena barata — é ambiente, não o protótipo.
+- O HUD mostra duas coisas: `fps` (taxa de apresentação do navegador) e `render X ms` (custo real do quadro). Na visão geral o render custa ~4 ms (299 chamadas, ~1 M triângulos); em 3× com LOD alto, ~8 ms. Em navegador remoto/streaming o `fps` fica em 1–2 **mesmo com `renderer.render` desligado** — medido: desligar o render não sobe o contador, é a apresentação do canvas no ambiente, não a cena. Na máquina do usuário vale o refresh do monitor.
 - Qualidade adaptativa: só degrada (0,85× de resolução, sem sombras) se o FPS cair **e** o custo de render passar de 18 ms. `?quality=full` na URL desliga a degradação.
 - Não há dados em tempo real nem integração com sensores: os elementos (carros, ônibus, robôs) são animações de composição.
 
