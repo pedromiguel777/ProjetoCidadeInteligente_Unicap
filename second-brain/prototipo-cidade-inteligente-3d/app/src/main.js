@@ -175,11 +175,28 @@ function setEnergyMode(active) {
 if (energyToggle) energyToggle.addEventListener("click", () => setEnergyMode(!energy.active));
 
 const overviewTarget = new THREE.Vector3(0, 4, 0);
+const viewTween = {
+  active: false,
+  start: 0,
+  duration: 550,
+  fromTarget: new THREE.Vector3(),
+  fromZoom: 1,
+};
 
 function resetView() {
-  controls.target.copy(overviewTarget);
-  camera.zoom = 1;
+  viewTween.active = true;
+  viewTween.start = performance.now();
+  viewTween.fromTarget.copy(controls.target);
+  viewTween.fromZoom = camera.zoom;
+}
+
+function stepViewTween() {
+  const t = Math.min(1, (performance.now() - viewTween.start) / viewTween.duration);
+  const eased = t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2;
+  controls.target.lerpVectors(viewTween.fromTarget, overviewTarget, eased);
+  camera.zoom = viewTween.fromZoom + (1 - viewTween.fromZoom) * eased;
   camera.updateProjectionMatrix();
+  if (t >= 1) viewTween.active = false;
 }
 
 const resetButton = document.getElementById("view-reset");
@@ -193,8 +210,11 @@ let lastTapY = 0;
 const touchPointers = new Set();
 
 renderer.domElement.addEventListener("pointerdown", (event) => {
+  viewTween.active = false;
   if (event.pointerType === "touch") touchPointers.add(event.pointerId);
 });
+
+renderer.domElement.addEventListener("wheel", () => { viewTween.active = false; }, { passive: true });
 
 renderer.domElement.addEventListener("pointercancel", (event) => {
   touchPointers.delete(event.pointerId);
@@ -283,6 +303,7 @@ function tick() {
     closeUp = nearView;
     document.body.classList.toggle("zoom-close", nearView);
   }
+  if (viewTween.active) stepViewTween();
   controls.target.x = THREE.MathUtils.clamp(controls.target.x, -240, 240);
   controls.target.z = THREE.MathUtils.clamp(controls.target.z, -240, 240);
   controls.target.y = THREE.MathUtils.clamp(controls.target.y, 0, 24);
