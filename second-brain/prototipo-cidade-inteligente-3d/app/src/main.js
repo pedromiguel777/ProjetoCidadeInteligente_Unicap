@@ -173,10 +173,25 @@ function setEnergyMode(active) {
 }
 
 if (energyToggle) energyToggle.addEventListener("click", () => setEnergyMode(!energy.active));
+
+const overviewTarget = new THREE.Vector3(0, 4, 0);
+
+function resetView() {
+  controls.target.copy(overviewTarget);
+  camera.zoom = 1;
+  camera.updateProjectionMatrix();
+}
+
+renderer.domElement.addEventListener("dblclick", resetView);
 window.addEventListener("keydown", (event) => {
   if (event.key === "e" || event.key === "E") setEnergyMode(!energy.active);
+  if (event.key === "Home") {
+    event.preventDefault();
+    resetView();
+  }
 });
 window.__citySetEnergyMode = setEnergyMode;
+window.__cityResetView = resetView;
 
 const SIM_HZ = 165;
 const SIM_STEP = 1 / SIM_HZ;
