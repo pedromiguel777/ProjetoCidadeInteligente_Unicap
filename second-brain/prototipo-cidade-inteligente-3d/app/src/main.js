@@ -35,8 +35,11 @@ controls.dampingFactor = 0.08;
 controls.minPolarAngle = 0.55;
 controls.maxPolarAngle = 1.2;
 controls.minZoom = 0.7;
-controls.maxZoom = 6;
+controls.maxZoom = 16;
 controls.rotateSpeed = 0.55;
+controls.enablePan = true;
+controls.screenSpacePanning = false;
+controls.panSpeed = 0.9;
 
 function resize() {
   const width = window.innerWidth;
@@ -71,6 +74,7 @@ Object.assign(sun.shadow.camera, {
 });
 sun.shadow.camera.updateProjectionMatrix();
 scene.add(sun);
+scene.add(sun.target);
 
 const fill = new THREE.DirectionalLight(0xd6ecff, 0.5);
 fill.position.set(-620, 420, -620);
@@ -93,6 +97,7 @@ window.__cityLod = { get level() { return lodLevel; }, count: city.lodLevels };
 let qualityLevel = 0;
 let lowFpsStreak = 0;
 let lodLevel = 0;
+let closeUp = false;
 const allowDegrade = new URLSearchParams(window.location.search).get("quality") !== "full";
 
 function degradeQuality(level) {
@@ -122,6 +127,26 @@ function degradeQuality(level) {
 }
 
 window.__cityDegrade = degradeQuality;
+
+const shadowCoverage = { radius: 430 };
+
+function updateShadowCoverage() {
+  const halfWidth = (camera.right - camera.left) / (2 * camera.zoom);
+  const halfHeight = (camera.top - camera.bottom) / (2 * camera.zoom);
+  const radius = THREE.MathUtils.clamp(Math.max(halfWidth, halfHeight) * 1.3, 70, 430);
+  sun.position.set(controls.target.x + 560, 800, controls.target.z + 340);
+  sun.target.position.set(controls.target.x, 0, controls.target.z);
+  sun.target.updateMatrixWorld();
+  if (Math.abs(radius - shadowCoverage.radius) < shadowCoverage.radius * 0.08) return;
+  shadowCoverage.radius = radius;
+  const shadowCamera = sun.shadow.camera;
+  shadowCamera.left = -radius;
+  shadowCamera.right = radius;
+  shadowCamera.top = radius;
+  shadowCamera.bottom = -radius;
+  shadowCamera.updateProjectionMatrix();
+  sun.shadow.normalBias = Math.max(0.08, radius * 0.0012);
+}
 
 const baseLights = {
   sun: sun.intensity,
@@ -192,7 +217,8 @@ function tick() {
     radius: Math.hypot(halfWidth, halfHeight) + 6,
   });
   energy.update(frameDt, simTime);
-  city.setLabelsVisible(camera.zoom > 1.55);
+  city.setLabelsVisible(camera.zoom > 1.55 && camera.zoom < 9);
+  city.setLabelScale(Math.min(1, (0.52 * halfWidth) / 46));
   if (camera.zoom > 1.55 && lodLevel !== 1) {
     lodLevel = 1;
     city.setLodLevel(1);
@@ -202,7 +228,16 @@ function tick() {
     city.setLodLevel(0);
     npcs.setLodLevel(0);
   }
+  const nearView = camera.zoom > 4.5;
+  if (nearView !== closeUp) {
+    closeUp = nearView;
+    document.body.classList.toggle("zoom-close", nearView);
+  }
+  controls.target.x = THREE.MathUtils.clamp(controls.target.x, -240, 240);
+  controls.target.z = THREE.MathUtils.clamp(controls.target.z, -240, 240);
+  controls.target.y = THREE.MathUtils.clamp(controls.target.y, 0, 24);
   controls.update();
+  updateShadowCoverage();
   const costStart = performance.now();
   renderer.render(scene, camera);
   costSum += performance.now() - costStart;

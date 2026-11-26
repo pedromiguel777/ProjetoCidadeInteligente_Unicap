@@ -55,6 +55,8 @@ A escala subiu para 0,80–0,90 (≈1,55–1,75 unidades de altura, ~20% maior q
 
 O laço de desenho roda em **165 Hz fixos**, num agendador próprio: a cada quadro ele soma 1/165 s ao prazo e usa `MessageChannel` quando o quadro já venceu ou `setTimeout` quando ainda falta tempo, sem depender do `requestAnimationFrame` (que fica preso ao refresh do monitor). A lógica dos pedestres usa o mesmo passo fixo de 1/165 s, e os mixers são atualizados uma vez por quadro, só para quem está dentro da vista. Medido com o render desligado, o laço crava **165 fps**; com o render ligado, o teto passa a ser a apresentação do canvas.
 
+**Aproximação até 16×.** O `maxZoom` subiu de 6× para 16× e o botão direito (ou dois dedos) desloca a vista, com o alvo preso a ±240 do centro. Para o close não quebrar o enquadramento: a sombra acompanha o alvo e o frustum de sombra fecha de 430 para 70 de raio (o mapa de 2048 sai de 0,42 para 0,068 unidade por texel); as etiquetas encolhem para ~26% da largura da tela e somem acima de 9×; o cartão de introdução some acima de 4,5×. Em 16× a vista fica em 47 chamadas e 172 mil triângulos — mais barata que a visão geral.
+
 ## Energia em movimento
 
 O botão **Ver fluxo de energia** (ou a tecla **E**) troca a cena clara pelo modo noturno de energia, sem sair do protótipo: o fundo escurece, as luzes caem e entra uma camada de leitura com painel, arcos e pulsos.

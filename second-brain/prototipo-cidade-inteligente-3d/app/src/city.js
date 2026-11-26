@@ -1540,6 +1540,11 @@ export function buildCity(scene, tex) {
     setLabelsVisible(visible) {
       for (const sprite of labelSprites) sprite.visible = visible;
     },
+    setLabelScale(scale) {
+      for (const sprite of labelSprites) {
+        if (sprite.isSprite) sprite.scale.set(46 * scale, 11.5 * scale, 1);
+      }
+    },
     setLodLevel(level) {
       for (const pair of lodPairs) {
         pair.low.visible = level < 1;
