@@ -183,6 +183,38 @@ function resetView() {
 }
 
 renderer.domElement.addEventListener("dblclick", resetView);
+
+let lastTapAt = 0;
+let lastTapX = 0;
+let lastTapY = 0;
+const touchPointers = new Set();
+
+renderer.domElement.addEventListener("pointerdown", (event) => {
+  if (event.pointerType === "touch") touchPointers.add(event.pointerId);
+});
+
+renderer.domElement.addEventListener("pointercancel", (event) => {
+  touchPointers.delete(event.pointerId);
+});
+
+renderer.domElement.addEventListener("pointerup", (event) => {
+  if (event.pointerType !== "touch") return;
+  touchPointers.delete(event.pointerId);
+  if (touchPointers.size > 0) {
+    lastTapAt = 0;
+    return;
+  }
+  const now = performance.now();
+  const moved = Math.hypot(event.clientX - lastTapX, event.clientY - lastTapY);
+  if (now - lastTapAt < 350 && moved < 26) {
+    lastTapAt = 0;
+    resetView();
+    return;
+  }
+  lastTapAt = now;
+  lastTapX = event.clientX;
+  lastTapY = event.clientY;
+});
 window.addEventListener("keydown", (event) => {
   if (event.key === "e" || event.key === "E") setEnergyMode(!energy.active);
   if (event.key === "Home") {
