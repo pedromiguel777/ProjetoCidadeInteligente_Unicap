@@ -7,12 +7,19 @@ import { createEnergyView } from "./energy.js";
 
 const canvas = document.querySelector("#scene");
 
-const renderer = new THREE.WebGLRenderer({
-  canvas,
-  antialias: true,
-  alpha: true,
-  powerPreference: "high-performance",
-});
+let renderer;
+try {
+  renderer = new THREE.WebGLRenderer({
+    canvas,
+    antialias: true,
+    alpha: true,
+    powerPreference: "high-performance",
+  });
+} catch (error) {
+  const note = document.querySelector(".hud.note");
+  if (note) note.textContent = "Este navegador não conseguiu iniciar o WebGL — ative a aceleração de hardware para ver o protótipo.";
+  throw error;
+}
 let pixelCap = Math.min(window.devicePixelRatio, 1);
 renderer.setPixelRatio(pixelCap);
 renderer.shadowMap.enabled = true;
@@ -45,7 +52,7 @@ function resize() {
   const width = window.innerWidth;
   const height = window.innerHeight;
   const aspect = width / height;
-  const viewHeight = Math.max(700, 1130 / aspect);
+  const viewHeight = Math.min(Math.max(700, 1130 / aspect), 1700);
   camera.left = (-viewHeight * aspect) / 2;
   camera.right = (viewHeight * aspect) / 2;
   camera.top = viewHeight / 2;
@@ -251,9 +258,7 @@ window.__cityResetView = resetView;
 const SIM_HZ = 165;
 const SIM_STEP = 1 / SIM_HZ;
 const MAX_STEPS = 42;
-const RENDER_HZ = 165;
-const FRAME_MS = 1000 / RENDER_HZ;
-window.__citySim = { hz: SIM_HZ, renderHz: RENDER_HZ };
+window.__citySim = { hz: SIM_HZ };
 
 const clock = new THREE.Clock();
 let frames = 0;
@@ -341,22 +346,7 @@ function tick() {
       triangles: renderer.info.render.triangles,
     };
   }
-  scheduleFrame();
+  requestAnimationFrame(tick);
 }
 
-const frameChannel = new MessageChannel();
-let nextFrameAt = performance.now();
-frameChannel.port1.onmessage = () => tick();
-
-function scheduleFrame() {
-  nextFrameAt += FRAME_MS;
-  const wait = nextFrameAt - performance.now();
-  if (wait > 1) {
-    setTimeout(tick, wait);
-    return;
-  }
-  if (wait < -FRAME_MS * 4) nextFrameAt = performance.now() + FRAME_MS;
-  frameChannel.port2.postMessage(0);
-}
-
-tick();
+requestAnimationFrame(tick);

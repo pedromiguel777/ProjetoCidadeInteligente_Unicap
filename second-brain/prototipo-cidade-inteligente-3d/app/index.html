@@ -119,6 +119,9 @@
         .energy-panel { gap: 7px; }
         .energy-panel .energy-intro, .energy-panel .energy-foot { display: none; }
       }
+      @media (max-width: 560px) {
+        .title { display: none; }
+      }
       @media (max-width: 820px) {
         .legend { display: none; }
         .title h1 { font-size: 20px; }
@@ -182,7 +185,7 @@
       </div>
       <p class="energy-foot">Valores de simulação, não medições reais. A tecla E também alterna a visualização.</p>
     </section>
-    <div class="hud note">three.js · WebGL · <span id="fps">–</span> fps · render <span id="cost">–</span> ms · laço 165 Hz<br />arraste para orbitar · botão direito move · zoom até 16× · botão “Vista geral” volta ao início</div>
+    <div class="hud note">three.js · WebGL · <span id="fps">–</span> fps · render <span id="cost">–</span> ms · sim 165 Hz<br />arraste para orbitar · botão direito move · zoom até 16× · botão “Vista geral” volta ao início</div>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
