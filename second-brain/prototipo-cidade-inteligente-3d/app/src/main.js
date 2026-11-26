@@ -182,6 +182,9 @@ function resetView() {
   camera.updateProjectionMatrix();
 }
 
+const resetButton = document.getElementById("view-reset");
+if (resetButton) resetButton.addEventListener("click", resetView);
+
 renderer.domElement.addEventListener("dblclick", resetView);
 
 let lastTapAt = 0;

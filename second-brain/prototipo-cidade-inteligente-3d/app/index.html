@@ -68,9 +68,20 @@
         background: rgba(9, 34, 38, 0.9); color: #d8fff6;
         border-color: rgba(124, 243, 230, 0.45);
       }
+      .view-reset {
+        top: 74px; right: 26px; pointer-events: auto; cursor: pointer;
+        display: flex; align-items: center; gap: 8px;
+        font: inherit; font-size: 12px; font-weight: 600;
+        color: #0b4b47; background: rgba(255, 255, 255, 0.55);
+        border: 1px solid rgba(255, 255, 255, 0.75); border-radius: 999px;
+        padding: 9px 15px; backdrop-filter: blur(12px);
+        box-shadow: 0 10px 26px rgba(18, 62, 64, 0.1);
+        transition: background 0.2s ease;
+      }
+      .view-reset:hover { background: rgba(255, 255, 255, 0.82); }
       .energy-panel {
-        right: 26px; top: 84px; width: 310px;
-        max-height: calc(100vh - 132px); overflow: auto;
+        right: 26px; top: 128px; width: 310px;
+        max-height: calc(100vh - 176px); overflow: auto;
         display: grid; gap: 9px; padding: 16px 18px;
         border-radius: 20px; background: rgba(8, 28, 32, 0.84);
         border: 1px solid rgba(124, 243, 230, 0.25); color: #d9f6f1;
@@ -113,8 +124,9 @@
         .title h1 { font-size: 20px; }
         .title p { font-size: 12px; max-width: 78vw; }
         .energy-toggle { top: 18px; right: 18px; padding: 9px 13px; font-size: 11.5px; }
+        .view-reset { top: 60px; right: 18px; padding: 8px 12px; font-size: 11px; }
         .energy-panel {
-          top: 64px; right: 18px; width: min(322px, calc(100vw - 36px));
+          top: 104px; right: 18px; width: min(322px, calc(100vw - 36px));
           max-height: 62vh; padding: 16px 18px;
         }
         .energy-panel .energy-intro, .energy-panel .energy-foot { display: none; }
@@ -139,6 +151,9 @@
     </div>
     <button class="hud energy-toggle" id="energy-toggle" type="button" aria-pressed="false" aria-controls="energy-panel">
       <span class="dot" style="background:#12b5a5"></span><span id="energy-toggle-label">Ver fluxo de energia</span>
+    </button>
+    <button class="hud view-reset" id="view-reset" type="button" aria-label="Voltar à vista geral" title="Voltar à vista geral (Home)">
+      <span class="dot" style="background:#0e9c91"></span>Vista geral
     </button>
     <section class="hud energy-panel" id="energy-panel" hidden aria-label="Captação e reciclagem de energia">
       <h2>Energia em movimento</h2>
@@ -167,7 +182,7 @@
       </div>
       <p class="energy-foot">Valores de simulação, não medições reais. A tecla E também alterna a visualização.</p>
     </section>
-    <div class="hud note">three.js · WebGL · <span id="fps">–</span> fps · render <span id="cost">–</span> ms · laço 165 Hz<br />arraste para orbitar · botão direito move · zoom até 16× · Home ou toque duplo: vista geral</div>
+    <div class="hud note">three.js · WebGL · <span id="fps">–</span> fps · render <span id="cost">–</span> ms · laço 165 Hz<br />arraste para orbitar · botão direito move · zoom até 16× · botão “Vista geral” volta ao início</div>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
