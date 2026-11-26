@@ -53,7 +53,7 @@ Os 96 percursos ficam a **51,4 unidades** do centro de cada quarteirão — exat
 
 A escala subiu para 0,80–0,90 (≈1,55–1,75 unidades de altura, ~20% maior que antes). A velocidade de cada pedestre não é sorteada: na carga, `npcs.js` amostra 48 quadros de `Walk.001`/`Walk.002`, soma o deslocamento horizontal de `footL`/`footR`/`toeL`/`toeR` por ciclo e usa a mediana como velocidade de solo (≈2,2 unidades/s no modelo, ~1,8 no mundo depois da escala). O `timeScale` da caminhada é `velocidade / (passada × escala)`, então o avanço do corpo casa com o pé. A fórmula anterior ignorava a escala do modelo e deixava ~30% de deslize; o resíduo que resta é do próprio clipe, cuja fase de apoio varia entre 1,65 e 3,02 unidades/s.
 
-O laço roda **só a lógica dos pedestres a 165 Hz** (passo fixo de 1/165 s com acumulador), independente do refresh do monitor — custa 0,025 ms por passo, ou 0,07 ms por quadro a 60 fps. Os 96 mixers ficam **fora** desse laço: são atualizados uma vez por quadro e só para quem está dentro da vista (0,51 ms em 6× contra 3,94 ms para os 96). Veículos e pulsos de energia também rodam uma vez por quadro. A primeira versão colocava os mixers dentro do passo de 165 Hz e multiplicava o custo por 2,75 (5 ms por quadro em LOD alto); foi corrigida.
+O laço de desenho roda em **165 Hz fixos**, num agendador próprio: a cada quadro ele soma 1/165 s ao prazo e usa `MessageChannel` quando o quadro já venceu ou `setTimeout` quando ainda falta tempo, sem depender do `requestAnimationFrame` (que fica preso ao refresh do monitor). A lógica dos pedestres usa o mesmo passo fixo de 1/165 s, e os mixers são atualizados uma vez por quadro, só para quem está dentro da vista. Medido com o render desligado, o laço crava **165 fps**; com o render ligado, o teto passa a ser a apresentação do canvas.
 
 ## Energia em movimento
 
@@ -79,7 +79,7 @@ Todos os números do painel são de simulação (não há sensores): o rodapé d
 
 ## Limitações conhecidas
 
-- O HUD mostra duas coisas: `fps` (taxa de apresentação do navegador) e `render X ms` (custo real do quadro). Na visão geral o render custa ~4 ms (299 chamadas, ~1 M triângulos); em 3× com LOD alto, ~8 ms. Em navegador remoto/streaming o `fps` fica em 1–2 **mesmo com `renderer.render` desligado** — medido: desligar o render não sobe o contador, é a apresentação do canvas no ambiente, não a cena. Na máquina do usuário vale o refresh do monitor.
+- O HUD mostra `fps` (quadros por segundo do laço, teto 165), `render X ms` (custo do quadro) e a marca `laço 165 Hz`. Na visão geral o render custa ~4 ms (299 chamadas, ~1 M triângulos); em 3× com LOD alto, ~8 ms. Em navegador remoto/streaming o `fps` cai para 1–2 **com o render ligado** e volta a 165 com `renderer.render` desligado — medido: o bloqueio está no swap do canvas desse ambiente, não na cena. Numa tela de 60 Hz o monitor continua mostrando 60 mesmo com o laço a 165; os quadros extras são descartados e custam GPU.
 - Qualidade adaptativa: só degrada (0,85× de resolução, sem sombras) se o FPS cair **e** o custo de render passar de 18 ms. `?quality=full` na URL desliga a degradação.
 - Não há dados em tempo real nem integração com sensores: os elementos (carros, ônibus, robôs) são animações de composição.
 

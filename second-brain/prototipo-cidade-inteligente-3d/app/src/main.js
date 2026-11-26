@@ -156,7 +156,9 @@ window.__citySetEnergyMode = setEnergyMode;
 const SIM_HZ = 165;
 const SIM_STEP = 1 / SIM_HZ;
 const MAX_STEPS = 42;
-window.__citySim = { hz: SIM_HZ };
+const RENDER_HZ = 165;
+const FRAME_MS = 1000 / RENDER_HZ;
+window.__citySim = { hz: SIM_HZ, renderHz: RENDER_HZ };
 
 const clock = new THREE.Clock();
 let frames = 0;
@@ -233,7 +235,22 @@ function tick() {
       triangles: renderer.info.render.triangles,
     };
   }
-  requestAnimationFrame(tick);
+  scheduleFrame();
+}
+
+const frameChannel = new MessageChannel();
+let nextFrameAt = performance.now();
+frameChannel.port1.onmessage = () => tick();
+
+function scheduleFrame() {
+  nextFrameAt += FRAME_MS;
+  const wait = nextFrameAt - performance.now();
+  if (wait > 1) {
+    setTimeout(tick, wait);
+    return;
+  }
+  if (wait < -FRAME_MS * 4) nextFrameAt = performance.now() + FRAME_MS;
+  frameChannel.port2.postMessage(0);
 }
 
 tick();
