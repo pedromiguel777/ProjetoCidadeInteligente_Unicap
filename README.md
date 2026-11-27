@@ -9,3 +9,5 @@ A base de conhecimento do projeto vive em [`second-brain/`](second-brain/README.
 ```bash
 python3 second-brain/scripts/auditar_grafo.py   # valida links e notas órfãs
 ```
+
+Integrantes da esquipe: Pedro Miguel Sotero de Moura, Adriely Clislaini Xavier da Silva, Danillo Ismael Bezerra Silva, Júlya Cândida Germana, Luiz Guilherme Pereira da Silva.
